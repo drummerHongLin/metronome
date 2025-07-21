@@ -68,12 +68,15 @@ class _MainScreenState extends State<MainScreen>
   void initState() {
     super.initState();
     beatController = AnimationController(vsync: this);
+    player =  AudioPlayer();
+    player.setLoopMode(LoopMode.all);
     initPlayer();
   }
 
   @override
   void dispose() {
     beatController.dispose();
+    player.dispose();
     super.dispose();
   }
 
@@ -92,9 +95,9 @@ class _MainScreenState extends State<MainScreen>
 
   void initPlayer() async {
     duration = (60 * referenceBeat.value() / (bpm * beatNote) * 1000).toInt();
-    beatController.duration = Duration(milliseconds: duration * beatNum);
-    
-    player = await Audio.generatePlayer(beatNum, duration, beatTypes, false);
+    beatController.duration = Duration(milliseconds: duration * beatNum);   
+    final source = Audio.generatePlayer(beatNum, duration, beatTypes, false);
+    await player.setAudioSources(source);
   }
 
   void pause() {
@@ -111,7 +114,7 @@ class _MainScreenState extends State<MainScreen>
 
   void reset() {
     beatController.reset();
-    player?.stop;
+    player.stop();
     initPlayer();
   }
 
