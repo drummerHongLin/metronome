@@ -24,20 +24,20 @@ class MetronomeBody extends StatelessWidget {
           ),
         ),
       ),
-     _dotNoteList(controller: controller,beatNum: beatNum,)
+     _DotNoteList(controller: controller,beatNum: beatNum,)
       ]),
     );
   }
 }
 
 
-class _dotNoteList extends AnimatedWidget {
+class _DotNoteList extends AnimatedWidget {
 
   final Animation<double>  controller;
    final int beatNum;
 
 
-  _dotNoteList({ required this.controller,required this.beatNum}):super(listenable: controller);
+  const _DotNoteList({ required this.controller,required this.beatNum}):super(listenable: controller);
   
 
   int get _activeIndex {

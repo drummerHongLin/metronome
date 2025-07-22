@@ -1,20 +1,128 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:flutter/material.dart';
 import 'package:flutter_metronome/configs/data_type.dart';
 import 'package:flutter_metronome/service/audio/sound.dart';
 import 'package:just_audio/just_audio.dart';
 
+class Audio extends ChangeNotifier {
+  Audio({
+    required int bpm,
+    required int beatNum,
+    required int beatNote,
+    required ReferenceBeat referenceBeat,
+    required List<BeatType> beatTypes,
+  }) : _bpm = bpm,
+       _beatNote = beatNote,
+       _beatNum = beatNum,
+       _referenceBeat = referenceBeat,
+       _beatTypes = beatTypes,
+       _lastBpm = bpm {
+    _player = AudioPlayer();
+    _player.setLoopMode(LoopMode.all);
+    changePlayer();
+  }
 
-abstract class Audio {
+  // 播放器相关的参数
+  // 1.bpm
+  int _bpm;
+  set bpm(v) {
+    if (v != _bpm) {
+      _isChange = true;
+      _bpm = v;
+    }
+  }
+
+  int _lastBpm;
+  set lastBpm(v) {
+    _lastBpm = v;
+  }
+
+  void setBpmBySlider(int v) {
+    if (v != _bpm) {
+      _bpm = v;
+      notifyListeners();
+    }
+  }
+  void compareBpmAfterSlider(){
+    _isChange = _bpm != _lastBpm;
+    _lastBpm = _bpm;
+  }
+
+  get bpm => _bpm;
+
+  // 2. 节拍数
+  int _beatNum;
+  set beatNum(v) {
+    if (v != _beatNum) {
+      _isChange = true;
+      _beatNum = v;
+    }
+    if (_beatTypes.length > _beatNum) {
+      _beatTypes = _beatTypes.sublist(0, _beatNum);
+    } else if (_beatTypes.length < _beatNum) {
+      for (int i = _beatTypes.length; i < _beatNum; i++) {
+        _beatTypes.add(BeatType.A);
+      }
+    }
+  }
+
+  int get beatNum => _beatNum;
+
+  // 3. 节拍音符
+  int _beatNote;
+  set beatNote(v) {
+    if (v != _beatNote) {
+      _isChange = true;
+      _beatNote = v;
+    }
+  }
+
+  get beatNote => _beatNote;
+
+  // 4. 参考音符
+  ReferenceBeat _referenceBeat;
+  ReferenceBeat get referenceBeat => _referenceBeat;
+  set referenceBeat(v) {
+    if (v != _referenceBeat) {
+      _isChange = true;
+      _referenceBeat = v;
+    }
+  }
+
+  // 5. 细分节拍
+  List<BeatType> _beatTypes;
+
+  get beatTypes => _beatTypes;
+
+  void setBeatType(int index, BeatType value) {
+    assert(index < _beatTypes.length);
+    if (_beatTypes[index] != value) {
+      _beatTypes[index] = value;
+      _isChange = true;
+    }
+  }
+
+  // 6. 当前是否播放标志
+  bool _isPlaying = false;
+  bool get isPlaying => _isPlaying;
+
+  // 7. 是否有变动标志
+  bool _isChange = false;
+  bool get isChange => _isChange;
+  // 8.产出player
+  late AudioPlayer _player;
+
+  // 根据音乐参数生成音源
   // 1. 根据拍数确定播放器的数量
   // 2. 需要传入每拍的拍子类型
   // 3. 需要每一拍时值， 每一拍是均匀的
-  static List<AudioSource> generatePlayer(
+  List<AudioSource> generateSound(
     int m,
     int duration,
     List<BeatType> type,
     bool firstHev,
-  )  {
+  ) {
     assert(m == type.length);
 
     final sources = <AudioSource>[];
@@ -38,6 +146,62 @@ abstract class Audio {
       );
       sources.add(soundSource);
     }
-  return sources;
+    return sources;
+  }
+
+  // 播放
+  void play() {
+    _isPlaying = true;
+    _player.play();
+    notifyListeners();
+  }
+
+  // 手动暂停
+  void pause() {
+    _isPlaying = false;
+    _player.pause();
+    notifyListeners();
+  }
+
+  // 获取同步时间
+  int get duration =>
+      (60 * _referenceBeat.value() / (_bpm * _beatNote) * 1000).toInt();
+
+  // 选择暂停
+  void pauseOnSelect() {
+    _player.pause();
+  }
+
+  // 重置播放器
+  Future<void> changePlayer() async {
+    if (_isPlaying) {
+      _player.stop();
+      _isPlaying = false;
+    }
+    _isChange = false;
+    notifyListeners();
+    final source = generateSound(_beatNum, duration, _beatTypes, false);
+    await _player.setAudioSources(source);
+  }
+
+  @override
+  void dispose() {
+    _player.dispose();
+    super.dispose();
+  }
+
+  void resetPlayer(
+    int bpm,
+    int beatNum,
+    int beatNote,
+    ReferenceBeat referenceBeat,
+    List<BeatType> beatTypes,
+  ) {
+    _bpm = bpm;
+    _beatNote = beatNote;
+    _beatNum = beatNum;
+    _referenceBeat = referenceBeat;
+    _beatTypes = beatTypes;
+    changePlayer();
   }
 }

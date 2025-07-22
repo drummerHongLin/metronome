@@ -4,8 +4,8 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class ModifierSector extends StatelessWidget {
   final int bpm;
-  final VoidCallback onChangeStart;
-  final VoidCallback onChangeEnd;
+  final Function(int v) onChangeStart;
+  final Function(int v) onChangeEnd;
   final Function(int v) onChanged;
   final List<BeatType> beatTypes;
   final Function(BuildContext, int) showSelector;
@@ -40,8 +40,11 @@ class ModifierSector extends StatelessWidget {
             value: bpm,
             interval: 1,
             enableTooltip: true,
-            onChangeStart: (value) => onChangeStart(),
-            onChangeEnd: (value) => onChangeEnd(),
+            onChangeStart: (value) => onChangeStart(value),
+            onChangeEnd:
+                (value) => {
+                  if (value is double) {onChangeEnd(value.toInt())},
+                },
             onChanged: (v) {
               if (v is double) {
                 onChanged(v.toInt());
@@ -59,7 +62,7 @@ class ModifierSector extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              for (var i = 0; j * 4 + i < beatTypes.length && i <4; i++)
+              for (var i = 0; j * 4 + i < beatTypes.length && i < 4; i++)
                 Card(
                   elevation: 1,
                   child: SizedBox(
@@ -69,7 +72,8 @@ class ModifierSector extends StatelessWidget {
                       child: Builder(
                         builder:
                             (innerContext) => GestureDetector(
-                              onTap: () => showSelector(innerContext, j * 4 + i),
+                              onTap:
+                                  () => showSelector(innerContext, j * 4 + i),
                               onVerticalDragStart:
                                   (_) => showSelector(innerContext, j * 4 + i),
                               child: Image.asset(
