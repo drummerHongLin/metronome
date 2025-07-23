@@ -4,6 +4,7 @@ import 'package:flutter_metronome/configs/default.dart';
 import 'package:flutter_metronome/ui/overlay/widgets/custom_input.dart';
 import 'package:flutter_metronome/ui/overlay/widgets/image_selector.dart';
 import 'package:flutter_metronome/ui/overlay/widgets/tow_line_selector.dart';
+import 'package:flutter_metronome/ui/utils/popuprouter_wrapper.dart';
 
 Offset _getPositon(
   BuildContext clickBoxContext, {
@@ -32,7 +33,7 @@ abstract class CustomOverlay {
     final referenceBeatSource =
         ReferenceBeat.values.map((e) => e.path).toList();
 
-    return _PopUpRouteWrapper(
+    return PopUpRouteWrapper(
       child: ImageSelector(
         position: offset,
         width: 40,
@@ -51,7 +52,7 @@ abstract class CustomOverlay {
 
     final subBeatSource = BeatType.values.map((e) => e.path).toList();
 
-    return _PopUpRouteWrapper(
+    return PopUpRouteWrapper(
       child: ImageSelector(
         position: offset,
         width: 40,
@@ -74,7 +75,7 @@ abstract class CustomOverlay {
 
     final initialIndex_2 = DefaultData.beatNoteChoices.indexOf(beatNote);
 
-    return _PopUpRouteWrapper<(int, int)>(
+    return PopUpRouteWrapper<(int, int)>(
       child: TowLineSelector(
         height: 108,
         width: 36,
@@ -93,42 +94,9 @@ abstract class CustomOverlay {
     int bpm,
   ) {
     Offset offset = _getPositon(clickBoxContext);
-    return _PopUpRouteWrapper<int>(
+    return PopUpRouteWrapper<int>(
       child: CustomInput(bpm: bpm, left: offset.dx - 35, top: offset.dy - 5),
     );
   }
 }
 
-class _PopUpRouteWrapper<T> extends PopupRoute<T> {
-  final Widget child;
-
-  _PopUpRouteWrapper({
-    super.settings,
-    super.requestFocus,
-    super.filter,
-    super.traversalEdgeBehavior,
-    super.directionalTraversalEdgeBehavior,
-    required this.child,
-  });
-
-  @override
-  Color? get barrierColor => Colors.transparent;
-
-  @override
-  bool get barrierDismissible => true;
-
-  @override
-  String? get barrierLabel => null;
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    return child;
-  }
-
-  @override
-  Duration get transitionDuration => Duration(seconds: 1);
-}

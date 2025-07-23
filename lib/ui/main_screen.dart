@@ -6,6 +6,7 @@ import 'package:flutter_metronome/configs/data_type.dart';
 import 'package:flutter_metronome/configs/default.dart';
 import 'package:flutter_metronome/service/audio/audio.dart';
 import 'package:flutter_metronome/ui/buttons/buttone_sector.dart';
+import 'package:flutter_metronome/ui/drawer/custom_drawer.dart';
 import 'package:flutter_metronome/ui/metronome/metronome_sector.dart';
 import 'package:flutter_metronome/ui/modifier/modifier_sector.dart';
 import 'package:flutter_metronome/ui/overlay/custom_overlay.dart';
@@ -156,58 +157,77 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: audio,
-      builder: (BuildContext context, Widget? child) {
-        return Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            spacing: 10,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SelectorSector(
-                bpm: audio.bpm,
-                beatNum: audio.beatNum,
-                beatNote: audio.beatNote,
-                referenceBeat: audio.referenceBeat,
-                showReferenceSelector: showReferenceSelector,
-                showBpmInput: showBpmSelectInput,
-                showBeatSelector: showBeatSelector,
-              ),
-              MetronomeBody(controller: beatController, beatNum: audio.beatNum),
-              ModifierSector(
-                bpm: audio.bpm,
-                onChangeStart: (v) {
-                  beforeChange();
-                  audio.lastBpm = v;
-                },
-                onChangeEnd: (v) {
-                  EasyDebounce.debounce(
-                    'my-debouncer', // <-- An ID for this particular debouncer
-                    Duration(milliseconds: 1000), // <-- The debounce duration
-                    () {
-                      audio.compareBpmAfterSlider();
-                      afterChange();
-                    }, // <-- The target method
-                  );
-                },
-                onChanged: audio.setBpmBySlider,
-                beatTypes: audio.beatTypes,
-                showSelector: showSubBeatSelector,
-              ),
-              ButtoneSector(
-                onPlayPressed: () {
-                  audio.isPlaying ? pause() : play();
-                },
-                onResetPressed: () {
-                  resetPlayer();
-                },
-                playing: audio.isPlaying,
-              ),
-            ],
-          ),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        leading: Builder(
+          builder: (ctx) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(ctx).openDrawer();
+              },
+            );
+          },
+        ),
+      ),
+      drawer: CustomDrawer(),
+      body: ListenableBuilder(
+        listenable: audio,
+        builder: (BuildContext context, Widget? child) {
+          return Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              spacing: 10,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SelectorSector(
+                  bpm: audio.bpm,
+                  beatNum: audio.beatNum,
+                  beatNote: audio.beatNote,
+                  referenceBeat: audio.referenceBeat,
+                  showReferenceSelector: showReferenceSelector,
+                  showBpmInput: showBpmSelectInput,
+                  showBeatSelector: showBeatSelector,
+                ),
+                MetronomeBody(
+                  controller: beatController,
+                  beatNum: audio.beatNum,
+                ),
+                ModifierSector(
+                  bpm: audio.bpm,
+                  onChangeStart: (v) {
+                    beforeChange();
+                    audio.lastBpm = v;
+                  },
+                  onChangeEnd: (v) {
+                    EasyDebounce.debounce(
+                      'my-debouncer', // <-- An ID for this particular debouncer
+                      Duration(milliseconds: 1000), // <-- The debounce duration
+                      () {
+                        audio.compareBpmAfterSlider();
+                        afterChange();
+                      }, // <-- The target method
+                    );
+                  },
+                  onChanged: audio.setBpmBySlider,
+                  beatTypes: audio.beatTypes,
+                  showSelector: showSubBeatSelector,
+                ),
+                ButtoneSector(
+                  onPlayPressed: () {
+                    audio.isPlaying ? pause() : play();
+                  },
+                  onResetPressed: () {
+                    resetPlayer();
+                  },
+                  playing: audio.isPlaying,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      resizeToAvoidBottomInset: false,
     );
   }
 }
