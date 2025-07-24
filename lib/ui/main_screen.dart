@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/configs/data_type.dart';
 import 'package:flutter_metronome/configs/default.dart';
@@ -19,9 +18,9 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen>
-    with SingleTickerProviderStateMixin {
+class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   late AnimationController beatController;
+  late AnimationController lottieController;
 
   int currentBeat = 0;
 
@@ -33,6 +32,7 @@ class _MainScreenState extends State<MainScreen>
   void initState() {
     super.initState();
     beatController = AnimationController(vsync: this);
+    lottieController = AnimationController(vsync: this);
     audio = Audio(
       bpm: DefaultData.bpm,
       beatNum: DefaultData.beatNum,
@@ -43,11 +43,13 @@ class _MainScreenState extends State<MainScreen>
     beatController.duration = Duration(
       milliseconds: audio.duration * audio.beatNum,
     );
+    lottieController.duration = Duration(milliseconds: audio.duration * 2);
   }
 
   @override
   void dispose() {
     beatController.dispose();
+    lottieController.dispose();
     audio.dispose();
     super.dispose();
   }
@@ -63,7 +65,9 @@ class _MainScreenState extends State<MainScreen>
     beatController.duration = Duration(
       milliseconds: audio.duration * audio.beatNum,
     );
+    lottieController.duration = Duration(milliseconds: audio.duration * 2);
     beatController.reset();
+    lottieController.reset();
   }
 
   showReferenceSelector(BuildContext innercontext) async {
@@ -130,13 +134,16 @@ class _MainScreenState extends State<MainScreen>
       beatController.duration = Duration(
         milliseconds: audio.duration * audio.beatNum,
       );
+      lottieController.duration = Duration(milliseconds: audio.duration * 2);
       beatController.reset();
+      lottieController.reset();
     }
   }
 
   void beforeChange() {
     audio.pauseOnSelect();
     beatController.stop();
+    lottieController.stop();
   }
 
   void showSnackBar(String content) {
@@ -148,11 +155,13 @@ class _MainScreenState extends State<MainScreen>
   void play() {
     audio.play();
     beatController.repeat();
+    lottieController.repeat();
   }
 
   void pause() {
     audio.pause();
     beatController.stop();
+    lottieController.stop();
   }
 
   @override
@@ -190,7 +199,8 @@ class _MainScreenState extends State<MainScreen>
                   showBeatSelector: showBeatSelector,
                 ),
                 MetronomeBody(
-                  controller: beatController,
+                  beatController: beatController,
+                  lottieController: lottieController,
                   beatNum: audio.beatNum,
                 ),
                 ModifierSector(
@@ -200,14 +210,8 @@ class _MainScreenState extends State<MainScreen>
                     audio.lastBpm = v;
                   },
                   onChangeEnd: (v) {
-                    EasyDebounce.debounce(
-                      'my-debouncer', // <-- An ID for this particular debouncer
-                      Duration(milliseconds: 1000), // <-- The debounce duration
-                      () {
-                        audio.compareBpmAfterSlider();
-                        afterChange();
-                      }, // <-- The target method
-                    );
+                    audio.compareBpmAfterSlider();
+                    afterChange();
                   },
                   onChanged: audio.setBpmBySlider,
                   beatTypes: audio.beatTypes,
@@ -221,6 +225,7 @@ class _MainScreenState extends State<MainScreen>
                     resetPlayer();
                   },
                   playing: audio.isPlaying,
+                  initialized: audio.isInitialized,
                 ),
               ],
             ),

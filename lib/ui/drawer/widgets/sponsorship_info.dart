@@ -89,7 +89,9 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            ElevatedButton(onPressed: () {}, child: Text("残忍拒绝")),
+            ElevatedButton(onPressed: () {
+              Navigator.pop(context);
+            }, child: Text("残忍拒绝")),
             ElevatedButton(onPressed: () {}, child: Text("赞助！")),
           ],
         ),

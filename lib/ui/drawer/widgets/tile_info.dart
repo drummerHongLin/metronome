@@ -24,10 +24,12 @@ class TileInfo extends StatelessWidget {
                   color: Theme.of(context).colorScheme.outline,
                 ),
               ),
-              Expanded(child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SingleChildScrollView(child: child),
-              )),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SingleChildScrollView(child: child),
+                ),
+              ),
             ],
           ),
         ),

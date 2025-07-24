@@ -44,7 +44,8 @@ class Audio extends ChangeNotifier {
       notifyListeners();
     }
   }
-  void compareBpmAfterSlider(){
+
+  void compareBpmAfterSlider() {
     _isChange = _bpm != _lastBpm;
     _lastBpm = _bpm;
   }
@@ -113,6 +114,9 @@ class Audio extends ChangeNotifier {
   // 8.产出player
   late AudioPlayer _player;
 
+  // 8. 音源是否配置成功
+  bool isInitialized = false;
+
   // 根据音乐参数生成音源
   // 1. 根据拍数确定播放器的数量
   // 2. 需要传入每拍的拍子类型
@@ -179,9 +183,12 @@ class Audio extends ChangeNotifier {
       _isPlaying = false;
     }
     _isChange = false;
+    isInitialized = false;
     notifyListeners();
     final source = generateSound(_beatNum, duration, _beatTypes, false);
     await _player.setAudioSources(source);
+    isInitialized = true;
+    notifyListeners();
   }
 
   @override

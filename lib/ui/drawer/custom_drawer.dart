@@ -49,6 +49,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               title: Text(_t.$2),
               selected: _selectedIndex == _t.$1,
               onTap: () async {
+                _setSelectedIndex(_t.$1);
                 // Update the state of the app
                 await Navigator.push(context, _buildInfoRoute(_t.$1));
                 // Then close the drawer

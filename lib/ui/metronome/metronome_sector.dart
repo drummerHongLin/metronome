@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class MetronomeBody extends StatelessWidget {
-  final Animation<double> controller;
+  final Animation<double> beatController;
+    final Animation<double> lottieController;
   final int beatNum;
 
-  const MetronomeBody({super.key, required this.controller, required this.beatNum}) ;
+  const MetronomeBody({super.key, required this.beatController, required this.beatNum, required this.lottieController}) ;
 
 
 
@@ -20,11 +21,11 @@ class MetronomeBody extends StatelessWidget {
         child: Center(
           child: Lottie.asset(
             "assets/lottie/main_scene.json",
-            controller: CurvedAnimation(parent: controller, curve: SawTooth((beatNum/2).ceil())),
+            controller: lottieController,
           ),
         ),
       ),
-     _DotNoteList(controller: controller,beatNum: beatNum,)
+     _DotNoteList(controller: beatController,beatNum: beatNum,)
       ]),
     );
   }

@@ -34,6 +34,7 @@ class ModifierSector extends StatelessWidget {
         ),
         SizedBox(
           width: double.maxFinite,
+          height: 40,
           child: SfSlider(
             min: 30,
             max: 180,

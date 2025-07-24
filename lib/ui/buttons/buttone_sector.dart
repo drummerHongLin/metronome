@@ -7,7 +7,10 @@ class ButtoneSector extends StatelessWidget {
 
   final bool playing;
 
-  const ButtoneSector({super.key, required this.onPlayPressed, required this.onResetPressed, required this.playing});
+  final bool initialized;
+
+
+  const ButtoneSector({super.key, required this.onPlayPressed, required this.onResetPressed, required this.playing, required this.initialized});
 
 
   @override
@@ -19,7 +22,7 @@ class ButtoneSector extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      onPressed: onPlayPressed,
+                      onPressed: initialized? onPlayPressed : null,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
@@ -29,7 +32,7 @@ class ButtoneSector extends StatelessWidget {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: onResetPressed,
+                      onPressed: initialized? onResetPressed : null,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
