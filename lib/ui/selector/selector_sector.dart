@@ -34,6 +34,7 @@ class SelectorSector extends StatelessWidget {
             width: 40,
             height: 40,
             fit: BoxFit.scaleDown,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         SelectorContainer(

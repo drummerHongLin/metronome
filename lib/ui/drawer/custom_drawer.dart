@@ -44,14 +44,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
               imgSize: Size(100, 100),
             ),
           ),
-          for (var _t in _tiles)
+          for (var t in _tiles)
             ListTile(
-              title: Text(_t.$2),
-              selected: _selectedIndex == _t.$1,
+              title: Text(t.$2),
+              selected: _selectedIndex == t.$1,
               onTap: () async {
-                _setSelectedIndex(_t.$1);
+                _setSelectedIndex(t.$1);
                 // Update the state of the app
-                await Navigator.push(context, _buildInfoRoute(_t.$1));
+                await Navigator.push(context, _buildInfoRoute(t.$1));
                 // Then close the drawer
               },
             ),

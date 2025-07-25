@@ -42,11 +42,11 @@ class _TowLineSelectorState extends State<TowLineSelector> {
     timer = Timer(Duration(seconds: 2), popWithResult);
   }
 
-  void changeSelectedIndex(int v, int v_i) {
+  void changeSelectedIndex(int v, int vi) {
     timer?.cancel();
     timer = Timer(Duration(seconds: 2), popWithResult);
     setState(() {
-      if (v_i == 1) {
+      if (vi == 1) {
         selectedIndex_1 = v;
       } else {
         selectedIndex_2 = v;

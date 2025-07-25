@@ -82,6 +82,7 @@ class ModifierSector extends StatelessWidget {
                                 fit: BoxFit.scaleDown,
                                 height: 40,
                                 width: 40,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                       ),

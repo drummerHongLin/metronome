@@ -62,6 +62,7 @@ class _ImageSelectorState extends State<ImageSelector> {
           width: widget.width,
           height: widget.height,
           fit: BoxFit.scaleDown,
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );
@@ -75,17 +76,19 @@ class _ImageSelectorState extends State<ImageSelector> {
       onTap: popWithResult,
       behavior: HitTestBehavior.opaque,
       child: Stack(
-        children:[ CustomSelector(
-          builder: builder,
-          initialIndex: widget.initialIndex,
-          itemCount: widget.source.length,
-          onIndexChanged: changeSelectedIndex,
-          left: left,
-          top: top,
-          height: (widget.height + 10) * 3,
-          width: widget.width + 10,
-          itemExtent: widget.width + 10,
-        ),]
+        children: [
+          CustomSelector(
+            builder: builder,
+            initialIndex: widget.initialIndex,
+            itemCount: widget.source.length,
+            onIndexChanged: changeSelectedIndex,
+            left: left,
+            top: top,
+            height: (widget.height + 10) * 3,
+            width: widget.width + 10,
+            itemExtent: widget.width + 10,
+          ),
+        ],
       ),
     );
   }

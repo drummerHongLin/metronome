@@ -3,37 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_metronome/service/shared_preference/shared_preference.dart';
 import 'package:flutter_metronome/ui/policy/widgts/external_web_view_screen.dart';
 
-class InteractionCard extends StatefulWidget {
-  const InteractionCard({super.key});
-
-  @override
-  State<InteractionCard> createState() => _InteractionCardState();
-}
-
-class _InteractionCardState extends State<InteractionCard> {
-  late final Future<bool> isAgreed;
-
-  @override
-  void initState() {
-    super.initState();
-    isAgreed = SharedPreferencesService.fetchAgreeStatus();
-    isAgreed.then((value) {
-      if (value) {
-        gotoMainScreen();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  void gotoMainScreen() {
-    if (mounted) {
-      Navigator.of(context).popAndPushNamed('/');
-    }
-  }
+class InteractionCard extends StatelessWidget {
+  const InteractionCard({super.key, required this.sps});
+  final SharedPreferencesService sps;
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +16,8 @@ class _InteractionCardState extends State<InteractionCard> {
           fit: BoxFit.fill,
         ),
       ),
-      child: FutureBuilder(
-        future: isAgreed,
-        builder: (ctx, asp) {
-          if (asp.data == false) {
-            return Center(
+      child: 
+             Center(
               child: Card(
                 elevation: 2,
                 child: Padding(
@@ -122,9 +91,7 @@ class _InteractionCardState extends State<InteractionCard> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                SharedPreferencesService.saveAgreeStatus(
-                                  true,
-                                ).whenComplete(gotoMainScreen);
+                                sps.saveAgreeStatus(true);
                               },
                               child: Text('同意'),
                             ),
@@ -135,12 +102,7 @@ class _InteractionCardState extends State<InteractionCard> {
                   ),
                 ),
               ),
-            );
-          } else {
-            return SizedBox.shrink();
-          }
-        },
-      ),
+            ),
     );
   }
 }

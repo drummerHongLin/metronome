@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/route/router.dart';
+import 'package:flutter_metronome/service/dependency/provider.dart';
 import 'package:flutter_metronome/theme/theme.dart';
 import 'package:flutter_metronome/theme/util.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: providers, child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -24,11 +26,10 @@ class MyApp extends StatelessWidget {
 
     MaterialTheme theme = MaterialTheme(textTheme);
 
-    return MaterialApp(
+    return MaterialApp.router(
       title: '惊鸿节拍器',
       theme: brightness == Brightness.light ? theme.light() : theme.dark(),
-      routes: router(),
-      initialRoute: '/user_agreement',
+      routerConfig: router(context.read()),
     );
   }
 }

@@ -31,5 +31,5 @@ class PopUpRouteWrapper<T> extends PopupRoute<T> {
   }
 
   @override
-  Duration get transitionDuration => Duration(seconds: 1);
+  Duration get transitionDuration => Duration(milliseconds: 100);
 }
