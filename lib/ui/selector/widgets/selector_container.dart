@@ -16,7 +16,8 @@ class SelectorContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 1,
+      elevation: 3,
+      shadowColor: Theme.of(context).colorScheme.shadow,
       child: SizedBox.fromSize(
         size: size,
         child: Padding(

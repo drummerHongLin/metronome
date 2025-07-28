@@ -25,15 +25,15 @@ class MetronomeBody extends StatelessWidget {
 
     return Expanded(
       child: Column(
-        children: [
-          Expanded(
-            child: Center(
-              child: Lottie.asset(lottieFile, controller: lottieController),
+          children: [
+            Expanded(
+              child: Center(
+                child: Lottie.asset(lottieFile, controller: lottieController),
+              ),
             ),
-          ),
-          _DotNoteList(controller: beatController, beatNum: beatNum),
-        ],
-      ),
+            _DotNoteList(controller: beatController, beatNum: beatNum),
+          ],
+        ),
     );
   }
 }
@@ -53,27 +53,30 @@ class _DotNoteList extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        for (int i = 0; i < beatNum; i++)
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color:
-                  i == _activeIndex
-                      ? Theme.of(context).colorScheme.onSurface
-                      : Colors.transparent,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Theme.of(context).colorScheme.onSurface,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (int i = 0; i < beatNum; i++)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  color:
+                      i == _activeIndex
+                          ? Theme.of(context).colorScheme.onSurface
+                          : Theme.of(context).colorScheme.surfaceDim,
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

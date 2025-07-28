@@ -44,7 +44,7 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
 
   Widget _buildChild() {
     return Column(
-      spacing: 20,
+      spacing: 30,
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 20),

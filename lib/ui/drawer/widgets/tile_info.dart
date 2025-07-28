@@ -16,21 +16,19 @@ class TileInfo extends StatelessWidget {
         width: mediaSize.width * 0.75,
         child: Card(
           elevation: 3,
-          child: Column(
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SingleChildScrollView(child: child),
-                ),
-              ),
-            ],
+                Expanded(child: SingleChildScrollView(child: child)),
+              ],
+            ),
           ),
         ),
       ),

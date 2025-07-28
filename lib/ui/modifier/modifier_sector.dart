@@ -65,7 +65,6 @@ class ModifierSector extends StatelessWidget {
             children: [
               for (var i = 0; j * 4 + i < beatTypes.length && i < 4; i++)
                 Card(
-                  elevation: 1,
                   child: SizedBox(
                     width: 75,
                     height: 50,
