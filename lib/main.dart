@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/route/router.dart';
-import 'package:flutter_metronome/service/dependency/provider.dart';
+import 'package:flutter_metronome/dependency/provider.dart';
 import 'package:flutter_metronome/theme/theme.dart';
 import 'package:flutter_metronome/theme/util.dart';
 import 'package:provider/provider.dart';
