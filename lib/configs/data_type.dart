@@ -2,6 +2,8 @@
 
 
 
+
+
 enum SoundType {
   com,
   hev,
@@ -64,6 +66,12 @@ enum ReferenceBeat { whole_note,half_note,quarter_note,   quaver, semi_quaver;
 
   String get path => 'assets/images/$name.webp';
 
+}
 
+enum Product { one_cup_coffee ;
 
- }
+int get price => switch(this){
+  Product.one_cup_coffee => 1
+};
+
+} 
