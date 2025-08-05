@@ -26,7 +26,7 @@ List<SingleChildWidget> get providers {
     Provider(
       create: (ctx) => SponsorshipViewModel(payRepo: ctx.read<PayRepo>()),
     ),
-    Provider(
+    ChangeNotifierProvider(
       create:
           (ctx) => MainScreenViewModel(
             bpm: DefaultData.bpm,

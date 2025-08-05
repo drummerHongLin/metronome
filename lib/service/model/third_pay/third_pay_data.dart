@@ -11,8 +11,8 @@ part 'third_pay_data.freezed.dart';
 @freezed
 abstract class TransactionInfo with _$TransactionInfo {
   const factory TransactionInfo({
-    required String accountToken,
-    required String purchaseDate,
+    required String appAccountToken,
+    required int purchaseDate,
     required String transactionId,
     required int quantity,
     required int price

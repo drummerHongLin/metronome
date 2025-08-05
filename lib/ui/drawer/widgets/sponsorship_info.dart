@@ -54,7 +54,7 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
 
   void showSnackBar({String? msg}) {
     final content = msg ?? viewModel.msg.value;
-    final snackBar = SnackBar(content: Text(content ?? ""));
+    final snackBar = SnackBar(content: Text(content));
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
@@ -64,9 +64,11 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
       listenable: viewModel.invokePurchase,
       builder: (ctx, child) {
         if(viewModel.invokePurchase.running) {
-          return Stack(children: [
+          return Stack(
+            alignment: AlignmentDirectional.center,
+            children: [
             child!,
-            CircularProgressIndicator()
+            const CircularProgressIndicator()
           ],);
         }
         return child!;

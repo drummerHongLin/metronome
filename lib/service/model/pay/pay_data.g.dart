@@ -92,10 +92,9 @@ _GetPaymentListResponse _$GetPaymentListResponseFromJson(
   Map<String, dynamic> json,
 ) => _GetPaymentListResponse(
   accountToken: json['accountToken'] as String,
-  paymentRecords:
-      (json['paymentRecords'] as List<dynamic>)
-          .map((e) => PaymentRecord.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  paymentRecords: (json['paymentRecords'] as List<dynamic>)
+      .map((e) => PaymentRecord.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$GetPaymentListResponseToJson(

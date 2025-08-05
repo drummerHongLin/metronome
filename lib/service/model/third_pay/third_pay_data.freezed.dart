@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TransactionInfo {
 
- String get accountToken; String get purchaseDate; String get transactionId; int get quantity; int get price;
+ String get appAccountToken; int get purchaseDate; String get transactionId; int get quantity; int get price;
 /// Create a copy of TransactionInfo
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $TransactionInfoCopyWith<TransactionInfo> get copyWith => _$TransactionInfoCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionInfo&&(identical(other.accountToken, accountToken) || other.accountToken == accountToken)&&(identical(other.purchaseDate, purchaseDate) || other.purchaseDate == purchaseDate)&&(identical(other.transactionId, transactionId) || other.transactionId == transactionId)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.price, price) || other.price == price));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionInfo&&(identical(other.appAccountToken, appAccountToken) || other.appAccountToken == appAccountToken)&&(identical(other.purchaseDate, purchaseDate) || other.purchaseDate == purchaseDate)&&(identical(other.transactionId, transactionId) || other.transactionId == transactionId)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.price, price) || other.price == price));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,accountToken,purchaseDate,transactionId,quantity,price);
+int get hashCode => Object.hash(runtimeType,appAccountToken,purchaseDate,transactionId,quantity,price);
 
 @override
 String toString() {
-  return 'TransactionInfo(accountToken: $accountToken, purchaseDate: $purchaseDate, transactionId: $transactionId, quantity: $quantity, price: $price)';
+  return 'TransactionInfo(appAccountToken: $appAccountToken, purchaseDate: $purchaseDate, transactionId: $transactionId, quantity: $quantity, price: $price)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $TransactionInfoCopyWith<$Res>  {
   factory $TransactionInfoCopyWith(TransactionInfo value, $Res Function(TransactionInfo) _then) = _$TransactionInfoCopyWithImpl;
 @useResult
 $Res call({
- String accountToken, String purchaseDate, String transactionId, int quantity, int price
+ String appAccountToken, int purchaseDate, String transactionId, int quantity, int price
 });
 
 
@@ -65,11 +65,11 @@ class _$TransactionInfoCopyWithImpl<$Res>
 
 /// Create a copy of TransactionInfo
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? accountToken = null,Object? purchaseDate = null,Object? transactionId = null,Object? quantity = null,Object? price = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? appAccountToken = null,Object? purchaseDate = null,Object? transactionId = null,Object? quantity = null,Object? price = null,}) {
   return _then(_self.copyWith(
-accountToken: null == accountToken ? _self.accountToken : accountToken // ignore: cast_nullable_to_non_nullable
+appAccountToken: null == appAccountToken ? _self.appAccountToken : appAccountToken // ignore: cast_nullable_to_non_nullable
 as String,purchaseDate: null == purchaseDate ? _self.purchaseDate : purchaseDate // ignore: cast_nullable_to_non_nullable
-as String,transactionId: null == transactionId ? _self.transactionId : transactionId // ignore: cast_nullable_to_non_nullable
+as int,transactionId: null == transactionId ? _self.transactionId : transactionId // ignore: cast_nullable_to_non_nullable
 as String,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,
@@ -157,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String accountToken,  String purchaseDate,  String transactionId,  int quantity,  int price)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String appAccountToken,  int purchaseDate,  String transactionId,  int quantity,  int price)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TransactionInfo() when $default != null:
-return $default(_that.accountToken,_that.purchaseDate,_that.transactionId,_that.quantity,_that.price);case _:
+return $default(_that.appAccountToken,_that.purchaseDate,_that.transactionId,_that.quantity,_that.price);case _:
   return orElse();
 
 }
@@ -178,10 +178,10 @@ return $default(_that.accountToken,_that.purchaseDate,_that.transactionId,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String accountToken,  String purchaseDate,  String transactionId,  int quantity,  int price)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String appAccountToken,  int purchaseDate,  String transactionId,  int quantity,  int price)  $default,) {final _that = this;
 switch (_that) {
 case _TransactionInfo():
-return $default(_that.accountToken,_that.purchaseDate,_that.transactionId,_that.quantity,_that.price);case _:
+return $default(_that.appAccountToken,_that.purchaseDate,_that.transactionId,_that.quantity,_that.price);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +198,10 @@ return $default(_that.accountToken,_that.purchaseDate,_that.transactionId,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String accountToken,  String purchaseDate,  String transactionId,  int quantity,  int price)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String appAccountToken,  int purchaseDate,  String transactionId,  int quantity,  int price)?  $default,) {final _that = this;
 switch (_that) {
 case _TransactionInfo() when $default != null:
-return $default(_that.accountToken,_that.purchaseDate,_that.transactionId,_that.quantity,_that.price);case _:
+return $default(_that.appAccountToken,_that.purchaseDate,_that.transactionId,_that.quantity,_that.price);case _:
   return null;
 
 }
@@ -213,11 +213,11 @@ return $default(_that.accountToken,_that.purchaseDate,_that.transactionId,_that.
 @JsonSerializable()
 
 class _TransactionInfo implements TransactionInfo {
-  const _TransactionInfo({required this.accountToken, required this.purchaseDate, required this.transactionId, required this.quantity, required this.price});
+  const _TransactionInfo({required this.appAccountToken, required this.purchaseDate, required this.transactionId, required this.quantity, required this.price});
   factory _TransactionInfo.fromJson(Map<String, dynamic> json) => _$TransactionInfoFromJson(json);
 
-@override final  String accountToken;
-@override final  String purchaseDate;
+@override final  String appAccountToken;
+@override final  int purchaseDate;
 @override final  String transactionId;
 @override final  int quantity;
 @override final  int price;
@@ -235,16 +235,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TransactionInfo&&(identical(other.accountToken, accountToken) || other.accountToken == accountToken)&&(identical(other.purchaseDate, purchaseDate) || other.purchaseDate == purchaseDate)&&(identical(other.transactionId, transactionId) || other.transactionId == transactionId)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.price, price) || other.price == price));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TransactionInfo&&(identical(other.appAccountToken, appAccountToken) || other.appAccountToken == appAccountToken)&&(identical(other.purchaseDate, purchaseDate) || other.purchaseDate == purchaseDate)&&(identical(other.transactionId, transactionId) || other.transactionId == transactionId)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.price, price) || other.price == price));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,accountToken,purchaseDate,transactionId,quantity,price);
+int get hashCode => Object.hash(runtimeType,appAccountToken,purchaseDate,transactionId,quantity,price);
 
 @override
 String toString() {
-  return 'TransactionInfo(accountToken: $accountToken, purchaseDate: $purchaseDate, transactionId: $transactionId, quantity: $quantity, price: $price)';
+  return 'TransactionInfo(appAccountToken: $appAccountToken, purchaseDate: $purchaseDate, transactionId: $transactionId, quantity: $quantity, price: $price)';
 }
 
 
@@ -255,7 +255,7 @@ abstract mixin class _$TransactionInfoCopyWith<$Res> implements $TransactionInfo
   factory _$TransactionInfoCopyWith(_TransactionInfo value, $Res Function(_TransactionInfo) _then) = __$TransactionInfoCopyWithImpl;
 @override @useResult
 $Res call({
- String accountToken, String purchaseDate, String transactionId, int quantity, int price
+ String appAccountToken, int purchaseDate, String transactionId, int quantity, int price
 });
 
 
@@ -272,11 +272,11 @@ class __$TransactionInfoCopyWithImpl<$Res>
 
 /// Create a copy of TransactionInfo
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? accountToken = null,Object? purchaseDate = null,Object? transactionId = null,Object? quantity = null,Object? price = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? appAccountToken = null,Object? purchaseDate = null,Object? transactionId = null,Object? quantity = null,Object? price = null,}) {
   return _then(_TransactionInfo(
-accountToken: null == accountToken ? _self.accountToken : accountToken // ignore: cast_nullable_to_non_nullable
+appAccountToken: null == appAccountToken ? _self.appAccountToken : appAccountToken // ignore: cast_nullable_to_non_nullable
 as String,purchaseDate: null == purchaseDate ? _self.purchaseDate : purchaseDate // ignore: cast_nullable_to_non_nullable
-as String,transactionId: null == transactionId ? _self.transactionId : transactionId // ignore: cast_nullable_to_non_nullable
+as int,transactionId: null == transactionId ? _self.transactionId : transactionId // ignore: cast_nullable_to_non_nullable
 as String,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,

@@ -18,26 +18,35 @@ import StoreKit
     paymentChannel.setMethodCallHandler({
       [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
       if call.method == "invokePurchase" {
-        /*
-          guard dlet argString = call.arguments as? String
+    
+        guard let argStringTemp = call.arguments,
+              let argString = argStringTemp as? String,
+              let argData = argString.data(using: .utf8)
           else{
               result(FlutterError(code: "UNAVAILABLE",
                                       message: "参数异常",
                                       details: nil))
               return
-        } */
-  //       let args = argString.data(using: .utf8)               
-  //       let accountId = args["accountId"] as? String ?? ""
-  //       let token = UUID(uuidString: accountId)
-  //       let quantity = args["quantity"] as? Int ?? 0
-      StoreManager.shared.invokePurchase(token: UUID(), quantity: 1){
+        }
+          do {
+              let purchaseInfo = try  JSONDecoder().decode(PurchaseInfo.self, from: argData)
+              StoreManager.shared.invokePurchase(purchaseInfo: purchaseInfo){
               (response, error) in
               if let error = error {
                   result(FlutterError(code: "PURCHASEERROR", message: error.localizedDescription, details: nil))
               }else {
                   result(response)
               }
+            }
           }
+          catch{
+              result(FlutterError(code: "UNAVAILABLE",
+                                      message: "参数异常",
+                                      details: nil))
+              return
+          }
+
+
       }
         else {
             result(FlutterMethodNotImplemented)

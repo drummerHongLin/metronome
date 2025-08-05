@@ -50,7 +50,7 @@ class PayRepo {
         UpdatePaymentRecordRequest(
           paymentNo: payRes.paymentNo,
           accountToken: token,
-          payTime: thirdPayRes.purchaseDate,
+          payTime: thirdPayRes.purchaseDate.toString(),
           transactionId: thirdPayRes.transactionId,
           payStatus: 3,
         ),

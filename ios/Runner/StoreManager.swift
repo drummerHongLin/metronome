@@ -1,8 +1,14 @@
 import StoreKit
 
+struct PurchaseInfo:Codable {
+    let accountId:String
+    let quantity:Int
+}
+
 enum IapError: Error {
     case ProductNotLoaded
     case PurchaseCanceled
+    case AccountIdError
 }
 
 extension IapError: LocalizedError {
@@ -12,6 +18,8 @@ extension IapError: LocalizedError {
             return NSLocalizedString("商品加载失败", comment: "")
         case .PurchaseCanceled:
             return NSLocalizedString("用户取消购买", comment: "")
+        case .AccountIdError:
+            return NSLocalizedString("用户ID错误", comment: "")
         }
     }
 }
@@ -39,7 +47,7 @@ class StoreManager {
 
     }
 
-    func invokePurchase(token: UUID, quantity: Int, completion: @escaping (String?, Error?) -> Void)
+    func invokePurchase(purchaseInfo:PurchaseInfo, completion: @escaping (String?, Error?) -> Void)
     {
         Task {
             if products.isEmpty {
@@ -50,10 +58,15 @@ class StoreManager {
             }
 
             do {
+                guard let token = UUID(uuidString:purchaseInfo.accountId)
+                else {
+                    completion(nil, IapError.AccountIdError)
+                    return
+                }
                 let purchaseResult: Product.PurchaseResult = try await products[0].purchase(
                     options: [
                         .appAccountToken(token),
-                        .quantity(quantity),
+                        .quantity(purchaseInfo.quantity),
                     ])
                 switch purchaseResult {
                 case .success(let verificationResult):

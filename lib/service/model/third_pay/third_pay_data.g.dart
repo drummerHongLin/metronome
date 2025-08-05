@@ -8,8 +8,8 @@ part of 'third_pay_data.dart';
 
 _TransactionInfo _$TransactionInfoFromJson(Map<String, dynamic> json) =>
     _TransactionInfo(
-      accountToken: json['accountToken'] as String,
-      purchaseDate: json['purchaseDate'] as String,
+      appAccountToken: json['appAccountToken'] as String,
+      purchaseDate: (json['purchaseDate'] as num).toInt(),
       transactionId: json['transactionId'] as String,
       quantity: (json['quantity'] as num).toInt(),
       price: (json['price'] as num).toInt(),
@@ -17,7 +17,7 @@ _TransactionInfo _$TransactionInfoFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$TransactionInfoToJson(_TransactionInfo instance) =>
     <String, dynamic>{
-      'accountToken': instance.accountToken,
+      'appAccountToken': instance.appAccountToken,
       'purchaseDate': instance.purchaseDate,
       'transactionId': instance.transactionId,
       'quantity': instance.quantity,

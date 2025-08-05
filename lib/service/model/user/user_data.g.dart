@@ -60,14 +60,12 @@ _GetUserResponse _$GetUserResponseFromJson(Map<String, dynamic> json) =>
       email: json['email'] as String,
       avatarUrl: json['avatarUrl'] as String,
       isVerified: json['isVerified'] as bool?,
-      createdAt:
-          json['createdAt'] == null
-              ? null
-              : DateTime.parse(json['createdAt'] as String),
-      updatedAt:
-          json['updatedAt'] == null
-              ? null
-              : DateTime.parse(json['updatedAt'] as String),
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
     );
 
 Map<String, dynamic> _$GetUserResponseToJson(_GetUserResponse instance) =>
