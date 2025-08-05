@@ -1,12 +1,14 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/configs/data_type.dart';
 import 'package:flutter_metronome/service/audio/sound.dart';
 import 'package:just_audio/just_audio.dart';
 
-class Audio extends ChangeNotifier {
-  Audio({
+class MainScreenViewModel extends ChangeNotifier {
+  MainScreenViewModel({
     required int bpm,
     required int beatNum,
     required int beatNote,
@@ -22,6 +24,17 @@ class Audio extends ChangeNotifier {
     _player.setLoopMode(LoopMode.all);
     changePlayer();
   }
+
+  // 定时器相关
+  ValueNotifier<int> tRemind = ValueNotifier(0);
+
+  void setTRemind(int m, int s) {
+    tRemind.value = m * 60 + s;
+  }
+
+  Timer? _timer;
+
+  ValueNotifier<int> runningState = ValueNotifier(0); // 0-未运行; 1-暂停; 2-运行中
 
   // 播放器相关的参数
   // 1.bpm
@@ -153,10 +166,34 @@ class Audio extends ChangeNotifier {
     return sources;
   }
 
+  // 函数功能
+  void startTimer(){
+    runningState.value = 1;
+    _timer = Timer.periodic(Duration(seconds: 1), (t){
+       tRemind.value--;
+       if(tRemind.value ==0){
+         t.cancel();
+       }
+    });
+  }
+  void endTimer(){
+    runningState.value = 0;
+    if(_timer!=null) _timer!.cancel();
+    _timer = null;
+    tRemind.value = 0;
+  }
+
+  void pauseTimer(){
+    runningState.value = 2;
+    if(_timer!=null) _timer!.cancel();
+    _timer = null;
+  }
+
   // 播放
   void play() {
     _isPlaying = true;
     _player.play();
+    startTimer();
     notifyListeners();
   }
 
@@ -164,6 +201,7 @@ class Audio extends ChangeNotifier {
   void pause() {
     _isPlaying = false;
     _player.pause();
+    pauseTimer();
     notifyListeners();
   }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_metronome/ui/drawer/widgets/tile_info.dart';
+import 'package:flutter_metronome/ui/utils/center_info.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 
 class JinghongInfo extends StatelessWidget {
@@ -32,7 +32,7 @@ class JinghongInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TileInfo(title: '关于惊鸿', child: _buildChild());
+    return CenterInfo(title: '关于惊鸿', child: _buildChild());
   }
 
   Widget _buildChild() {

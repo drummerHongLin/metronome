@@ -18,16 +18,16 @@ import StoreKit
     paymentChannel.setMethodCallHandler({
       [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
       if call.method == "invokePurchase" {
-         /*
-          guard let argString = call.arguments as? String
+        /*
+          guard dlet argString = call.arguments as? String
           else{
               result(FlutterError(code: "UNAVAILABLE",
                                       message: "参数异常",
                                       details: nil))
               return
-          } */
-  //        let args = argString.data(using: .utf8)               
-  //        let accountId = args["accountId"] as? String ?? ""
+        } */
+  //       let args = argString.data(using: .utf8)               
+  //       let accountId = args["accountId"] as? String ?? ""
   //       let token = UUID(uuidString: accountId)
   //       let quantity = args["quantity"] as? Int ?? 0
       StoreManager.shared.invokePurchase(token: UUID(), quantity: 1){

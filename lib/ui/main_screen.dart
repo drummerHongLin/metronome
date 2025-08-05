@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/configs/data_type.dart';
 import 'package:flutter_metronome/configs/default.dart';
-import 'package:flutter_metronome/service/audio/audio.dart';
+import 'package:flutter_metronome/ui/main_screen_view_model.dart';
 import 'package:flutter_metronome/ui/buttons/buttone_sector.dart';
 import 'package:flutter_metronome/ui/drawer/custom_drawer.dart';
 import 'package:flutter_metronome/ui/metronome/metronome_sector.dart';
@@ -12,7 +12,8 @@ import 'package:flutter_metronome/ui/overlay/custom_overlay.dart';
 import 'package:flutter_metronome/ui/selector/selector_sector.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final MainScreenViewModel viewModel;
+  const MainScreen({super.key, required this.viewModel});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -26,36 +27,30 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   final GlobalKey containerKey = GlobalKey();
 
-  late Audio audio;
-
   @override
   void initState() {
     super.initState();
     beatController = AnimationController(vsync: this);
     lottieController = AnimationController(vsync: this);
-    audio = Audio(
-      bpm: DefaultData.bpm,
-      beatNum: DefaultData.beatNum,
-      beatNote: DefaultData.beatNote,
-      referenceBeat: DefaultData.referenceBeat,
-      beatTypes: [BeatType.A, BeatType.A, BeatType.A, BeatType.A],
-    );
+
     beatController.duration = Duration(
-      milliseconds: audio.duration * audio.beatNum,
+      milliseconds: widget.viewModel.duration * widget.viewModel.beatNum,
     );
-    lottieController.duration = Duration(milliseconds: audio.duration * 2);
+    lottieController.duration = Duration(
+      milliseconds: widget.viewModel.duration * 2,
+    );
   }
 
   @override
   void dispose() {
     beatController.dispose();
     lottieController.dispose();
-    audio.dispose();
+    widget.viewModel.dispose();
     super.dispose();
   }
 
   void resetPlayer() {
-    audio.resetPlayer(
+    widget.viewModel.resetPlayer(
       DefaultData.bpm,
       DefaultData.beatNum,
       DefaultData.beatNote,
@@ -63,9 +58,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       [BeatType.A, BeatType.A, BeatType.A, BeatType.A],
     );
     beatController.duration = Duration(
-      milliseconds: audio.duration * audio.beatNum,
+      milliseconds: widget.viewModel.duration * widget.viewModel.beatNum,
     );
-    lottieController.duration = Duration(milliseconds: audio.duration * 2);
+    lottieController.duration = Duration(
+      milliseconds: widget.viewModel.duration * 2,
+    );
     beatController.reset();
     lottieController.reset();
   }
@@ -77,17 +74,17 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       context,
       CustomOverlay.buildReferenSelectorPageRoute(
         innercontext,
-        audio.referenceBeat.index,
+        widget.viewModel.referenceBeat.index,
       ),
     );
 
-    audio.referenceBeat = ReferenceBeat.values[rst!];
+    widget.viewModel.referenceBeat = ReferenceBeat.values[rst!];
     await afterChange();
   }
 
   showSubBeatSelector(BuildContext innercontext, int i) async {
     beforeChange();
-    final subBeatToSelect = audio.beatTypes[i];
+    final subBeatToSelect = widget.viewModel.beatTypes[i];
     final rst = await Navigator.push(
       context,
       CustomOverlay.buildSubBeatSelectorPageRoute(
@@ -96,7 +93,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       ),
     );
 
-    audio.setBeatType(i, BeatType.values[rst!]);
+    widget.viewModel.setBeatType(i, BeatType.values[rst!]);
     await afterChange();
   }
 
@@ -104,9 +101,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     beforeChange();
     final rst = await Navigator.push(
       context,
-      CustomOverlay.buildBpmInputPageRoute(innnerContext, audio.bpm),
+      CustomOverlay.buildBpmInputPageRoute(innnerContext, widget.viewModel.bpm),
     );
-    audio.bpm = rst!;
+    widget.viewModel.bpm = rst!;
     await afterChange();
   }
 
@@ -116,32 +113,34 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       context,
       CustomOverlay.buildBeatSelectorPageRoute(
         innnerContext,
-        audio.beatNum,
-        audio.beatNote,
+        widget.viewModel.beatNum,
+        widget.viewModel.beatNote,
       ),
     );
 
-    audio.beatNum = DefaultData.beatNumChoices[rst!.$1];
-    audio.beatNote = DefaultData.beatNoteChoices[rst.$2];
+    widget.viewModel.beatNum = DefaultData.beatNumChoices[rst!.$1];
+    widget.viewModel.beatNote = DefaultData.beatNoteChoices[rst.$2];
     await afterChange();
   }
 
   Future<void> afterChange() async {
-    if (!audio.isChange && audio.isPlaying) {
+    if (!widget.viewModel.isChange && widget.viewModel.isPlaying) {
       play();
-    } else if (audio.isChange) {
-      await audio.changePlayer();
+    } else if (widget.viewModel.isChange) {
+      await widget.viewModel.changePlayer();
       beatController.duration = Duration(
-        milliseconds: audio.duration * audio.beatNum,
+        milliseconds: widget.viewModel.duration * widget.viewModel.beatNum,
       );
-      lottieController.duration = Duration(milliseconds: audio.duration * 2);
+      lottieController.duration = Duration(
+        milliseconds: widget.viewModel.duration * 2,
+      );
       beatController.reset();
       lottieController.reset();
     }
   }
 
   void beforeChange() {
-    audio.pauseOnSelect();
+    widget.viewModel.pauseOnSelect();
     beatController.stop();
     lottieController.stop();
   }
@@ -153,13 +152,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   // 页面按键play控制 -> 播放器播放和节拍controller
   void play() {
-    audio.play();
+    widget.viewModel.play();
     beatController.repeat();
     lottieController.repeat();
   }
 
   void pause() {
-    audio.pause();
+    widget.viewModel.pause();
     beatController.stop();
     lottieController.stop();
   }
@@ -178,10 +177,33 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             );
           },
         ),
+        actions: [
+          ValueListenableBuilder(
+            valueListenable: widget.viewModel.runningState,
+            builder: (ctx, v, child) {
+              if (v == 0) return child!;
+              return ValueListenableBuilder(
+                valueListenable: widget.viewModel.tRemind,
+                builder: (ctx, t, c) {
+                  return TextButton.icon(
+                    onPressed: () {},
+                    label: Text("${t ~/ 60} : ${t % 60}"),
+                    icon: Icon(Icons.close),
+                  );
+                },
+              );
+            },
+            child: TextButton.icon(
+              onPressed: () {},
+              label: Text("定时器"),
+              icon: Icon(Icons.alarm),
+            ),
+          ),
+        ],
       ),
       drawer: CustomDrawer(),
       body: ListenableBuilder(
-        listenable: audio,
+        listenable: widget.viewModel,
         builder: (BuildContext context, Widget? child) {
           return Padding(
             padding: const EdgeInsets.all(15.0),
@@ -190,10 +212,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SelectorSector(
-                  bpm: audio.bpm,
-                  beatNum: audio.beatNum,
-                  beatNote: audio.beatNote,
-                  referenceBeat: audio.referenceBeat,
+                  bpm: widget.viewModel.bpm,
+                  beatNum: widget.viewModel.beatNum,
+                  beatNote: widget.viewModel.beatNote,
+                  referenceBeat: widget.viewModel.referenceBeat,
                   showReferenceSelector: showReferenceSelector,
                   showBpmInput: showBpmSelectInput,
                   showBeatSelector: showBeatSelector,
@@ -201,31 +223,42 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 MetronomeBody(
                   beatController: beatController,
                   lottieController: lottieController,
-                  beatNum: audio.beatNum,
+                  beatNum: widget.viewModel.beatNum,
                 ),
                 ModifierSector(
-                  bpm: audio.bpm,
+                  bpm: widget.viewModel.bpm,
                   onChangeStart: (v) {
                     beforeChange();
-                    audio.lastBpm = v;
+                    widget.viewModel.lastBpm = v;
                   },
                   onChangeEnd: (v) {
-                    audio.compareBpmAfterSlider();
+                    widget.viewModel.compareBpmAfterSlider();
                     afterChange();
                   },
-                  onChanged: audio.setBpmBySlider,
-                  beatTypes: audio.beatTypes,
+                  onChanged: widget.viewModel.setBpmBySlider,
+                  beatTypes: widget.viewModel.beatTypes,
                   showSelector: showSubBeatSelector,
+                ),
+                Row(
+                  children: [
+                    TextButton.icon(
+                      onPressed: () {},
+                      label: Text("新建练习节拍"),
+                      icon: Icon(Icons.music_note),
+                    ),
+                    Spacer(),
+                    TextButton(onPressed: () {}, child: Text("保存")),
+                  ],
                 ),
                 ButtoneSector(
                   onPlayPressed: () {
-                    audio.isPlaying ? pause() : play();
+                    widget.viewModel.isPlaying ? pause() : play();
                   },
                   onResetPressed: () {
                     resetPlayer();
                   },
-                  playing: audio.isPlaying,
-                  initialized: audio.isInitialized,
+                  playing: widget.viewModel.isPlaying,
+                  initialized: widget.viewModel.isInitialized,
                 ),
               ],
             ),

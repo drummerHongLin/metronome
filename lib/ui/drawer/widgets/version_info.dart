@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_metronome/ui/drawer/widgets/tile_info.dart';
+import 'package:flutter_metronome/ui/utils/center_info.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 
 class VersionInfo extends StatelessWidget {
@@ -21,7 +21,7 @@ class VersionInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TileInfo(title: '版本说明', child: _buildChild(context));
+    return CenterInfo(title: '版本说明', child: _buildChild(context));
   }
 
   Widget _buildChild(BuildContext context) {

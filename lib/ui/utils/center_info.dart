@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class TileInfo extends StatelessWidget {
+class CenterInfo extends StatelessWidget {
   final Widget child;
   final String title;
 
-  const TileInfo({super.key, required this.title, required this.child});
+  const CenterInfo({super.key, required this.title, required this.child});
 
   @override
   Widget build(BuildContext context) {
