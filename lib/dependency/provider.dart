@@ -1,6 +1,5 @@
-import 'package:flutter_metronome/configs/data_type.dart';
-import 'package:flutter_metronome/configs/default.dart';
 import 'package:flutter_metronome/repo/pay_repo.dart';
+import 'package:flutter_metronome/repo/player_config_repo.dart';
 import 'package:flutter_metronome/service/native_channel/native_channel.dart';
 
 import 'package:flutter_metronome/service/shared_preference/shared_preference.dart';
@@ -15,26 +14,18 @@ List<SingleChildWidget> get providers {
     ChangeNotifierProvider(create: (context) => SharedPreferencesService()),
     Provider(create: (ctx) => PayDbClient()),
     Provider(create: (ctx) => NativeChannel.instance),
+    Provider(create: (ctx)=> PlayerConfigDbClient()),
     Provider(
-      create:
-          (ctx) => PayRepo(
-            payService: ctx.read<PayDbClient>(),
-            preferencesService: ctx.read(),
-            thirdPayService: ctx.read<NativeChannel>(),
-          ),
-    ),
+      create: (ctx) => PayRepo(
+        payService: ctx.read<PayDbClient>(),
+        preferencesService: ctx.read(),
+        thirdPayService: ctx.read<NativeChannel>(),
+      ),
+    ),    Provider(create: (ctx)=>PlayerConfigRepo(playerConfigService: ctx.read<PlayerConfigDbClient>())),
     Provider(
       create: (ctx) => SponsorshipViewModel(payRepo: ctx.read<PayRepo>()),
     ),
-    ChangeNotifierProvider(
-      create:
-          (ctx) => MainScreenViewModel(
-            bpm: DefaultData.bpm,
-            beatNum: DefaultData.beatNum,
-            beatNote: DefaultData.beatNote,
-            referenceBeat: DefaultData.referenceBeat,
-            beatTypes: [BeatType.A, BeatType.A, BeatType.A, BeatType.A],
-          ),
-    ),
+
+    ChangeNotifierProvider(create: (ctx) => MainScreenViewModel(configRepo: ctx.read<PlayerConfigRepo>())),
   ];
 }

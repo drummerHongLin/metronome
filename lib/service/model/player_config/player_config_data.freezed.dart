@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PlayerConfig {
 
- String get playerConfigNo; String get createTime; String get updateTime; int get bpm; int get beatNum; int get beatNote; int get referenceBeat; String get subBeats;
+ String get playerConfigNo; String get createTime; String get updateTime; int get bpm; int get beatNum; int get beatNote; int get referenceBeat; String get subBeats; String get configTitle;
 /// Create a copy of PlayerConfig
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PlayerConfigCopyWith<PlayerConfig> get copyWith => _$PlayerConfigCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerConfig&&(identical(other.playerConfigNo, playerConfigNo) || other.playerConfigNo == playerConfigNo)&&(identical(other.createTime, createTime) || other.createTime == createTime)&&(identical(other.updateTime, updateTime) || other.updateTime == updateTime)&&(identical(other.bpm, bpm) || other.bpm == bpm)&&(identical(other.beatNum, beatNum) || other.beatNum == beatNum)&&(identical(other.beatNote, beatNote) || other.beatNote == beatNote)&&(identical(other.referenceBeat, referenceBeat) || other.referenceBeat == referenceBeat)&&(identical(other.subBeats, subBeats) || other.subBeats == subBeats));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerConfig&&(identical(other.playerConfigNo, playerConfigNo) || other.playerConfigNo == playerConfigNo)&&(identical(other.createTime, createTime) || other.createTime == createTime)&&(identical(other.updateTime, updateTime) || other.updateTime == updateTime)&&(identical(other.bpm, bpm) || other.bpm == bpm)&&(identical(other.beatNum, beatNum) || other.beatNum == beatNum)&&(identical(other.beatNote, beatNote) || other.beatNote == beatNote)&&(identical(other.referenceBeat, referenceBeat) || other.referenceBeat == referenceBeat)&&(identical(other.subBeats, subBeats) || other.subBeats == subBeats)&&(identical(other.configTitle, configTitle) || other.configTitle == configTitle));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,playerConfigNo,createTime,updateTime,bpm,beatNum,beatNote,referenceBeat,subBeats);
+int get hashCode => Object.hash(runtimeType,playerConfigNo,createTime,updateTime,bpm,beatNum,beatNote,referenceBeat,subBeats,configTitle);
 
 @override
 String toString() {
-  return 'PlayerConfig(playerConfigNo: $playerConfigNo, createTime: $createTime, updateTime: $updateTime, bpm: $bpm, beatNum: $beatNum, beatNote: $beatNote, referenceBeat: $referenceBeat, subBeats: $subBeats)';
+  return 'PlayerConfig(playerConfigNo: $playerConfigNo, createTime: $createTime, updateTime: $updateTime, bpm: $bpm, beatNum: $beatNum, beatNote: $beatNote, referenceBeat: $referenceBeat, subBeats: $subBeats, configTitle: $configTitle)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PlayerConfigCopyWith<$Res>  {
   factory $PlayerConfigCopyWith(PlayerConfig value, $Res Function(PlayerConfig) _then) = _$PlayerConfigCopyWithImpl;
 @useResult
 $Res call({
- String playerConfigNo, String createTime, String updateTime, int bpm, int beatNum, int beatNote, int referenceBeat, String subBeats
+ String playerConfigNo, String createTime, String updateTime, int bpm, int beatNum, int beatNote, int referenceBeat, String subBeats, String configTitle
 });
 
 
@@ -65,7 +65,7 @@ class _$PlayerConfigCopyWithImpl<$Res>
 
 /// Create a copy of PlayerConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? playerConfigNo = null,Object? createTime = null,Object? updateTime = null,Object? bpm = null,Object? beatNum = null,Object? beatNote = null,Object? referenceBeat = null,Object? subBeats = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? playerConfigNo = null,Object? createTime = null,Object? updateTime = null,Object? bpm = null,Object? beatNum = null,Object? beatNote = null,Object? referenceBeat = null,Object? subBeats = null,Object? configTitle = null,}) {
   return _then(_self.copyWith(
 playerConfigNo: null == playerConfigNo ? _self.playerConfigNo : playerConfigNo // ignore: cast_nullable_to_non_nullable
 as String,createTime: null == createTime ? _self.createTime : createTime // ignore: cast_nullable_to_non_nullable
@@ -75,6 +75,7 @@ as int,beatNum: null == beatNum ? _self.beatNum : beatNum // ignore: cast_nullab
 as int,beatNote: null == beatNote ? _self.beatNote : beatNote // ignore: cast_nullable_to_non_nullable
 as int,referenceBeat: null == referenceBeat ? _self.referenceBeat : referenceBeat // ignore: cast_nullable_to_non_nullable
 as int,subBeats: null == subBeats ? _self.subBeats : subBeats // ignore: cast_nullable_to_non_nullable
+as String,configTitle: null == configTitle ? _self.configTitle : configTitle // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -160,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String playerConfigNo,  String createTime,  String updateTime,  int bpm,  int beatNum,  int beatNote,  int referenceBeat,  String subBeats)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String playerConfigNo,  String createTime,  String updateTime,  int bpm,  int beatNum,  int beatNote,  int referenceBeat,  String subBeats,  String configTitle)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PlayerConfig() when $default != null:
-return $default(_that.playerConfigNo,_that.createTime,_that.updateTime,_that.bpm,_that.beatNum,_that.beatNote,_that.referenceBeat,_that.subBeats);case _:
+return $default(_that.playerConfigNo,_that.createTime,_that.updateTime,_that.bpm,_that.beatNum,_that.beatNote,_that.referenceBeat,_that.subBeats,_that.configTitle);case _:
   return orElse();
 
 }
@@ -181,10 +182,10 @@ return $default(_that.playerConfigNo,_that.createTime,_that.updateTime,_that.bpm
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String playerConfigNo,  String createTime,  String updateTime,  int bpm,  int beatNum,  int beatNote,  int referenceBeat,  String subBeats)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String playerConfigNo,  String createTime,  String updateTime,  int bpm,  int beatNum,  int beatNote,  int referenceBeat,  String subBeats,  String configTitle)  $default,) {final _that = this;
 switch (_that) {
 case _PlayerConfig():
-return $default(_that.playerConfigNo,_that.createTime,_that.updateTime,_that.bpm,_that.beatNum,_that.beatNote,_that.referenceBeat,_that.subBeats);case _:
+return $default(_that.playerConfigNo,_that.createTime,_that.updateTime,_that.bpm,_that.beatNum,_that.beatNote,_that.referenceBeat,_that.subBeats,_that.configTitle);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +202,10 @@ return $default(_that.playerConfigNo,_that.createTime,_that.updateTime,_that.bpm
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String playerConfigNo,  String createTime,  String updateTime,  int bpm,  int beatNum,  int beatNote,  int referenceBeat,  String subBeats)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String playerConfigNo,  String createTime,  String updateTime,  int bpm,  int beatNum,  int beatNote,  int referenceBeat,  String subBeats,  String configTitle)?  $default,) {final _that = this;
 switch (_that) {
 case _PlayerConfig() when $default != null:
-return $default(_that.playerConfigNo,_that.createTime,_that.updateTime,_that.bpm,_that.beatNum,_that.beatNote,_that.referenceBeat,_that.subBeats);case _:
+return $default(_that.playerConfigNo,_that.createTime,_that.updateTime,_that.bpm,_that.beatNum,_that.beatNote,_that.referenceBeat,_that.subBeats,_that.configTitle);case _:
   return null;
 
 }
@@ -216,7 +217,7 @@ return $default(_that.playerConfigNo,_that.createTime,_that.updateTime,_that.bpm
 @JsonSerializable()
 
 class _PlayerConfig implements PlayerConfig {
-  const _PlayerConfig({required this.playerConfigNo, required this.createTime, required this.updateTime, required this.bpm, required this.beatNum, required this.beatNote, required this.referenceBeat, required this.subBeats});
+  const _PlayerConfig({required this.playerConfigNo, required this.createTime, required this.updateTime, required this.bpm, required this.beatNum, required this.beatNote, required this.referenceBeat, required this.subBeats, required this.configTitle});
   factory _PlayerConfig.fromJson(Map<String, dynamic> json) => _$PlayerConfigFromJson(json);
 
 @override final  String playerConfigNo;
@@ -227,6 +228,7 @@ class _PlayerConfig implements PlayerConfig {
 @override final  int beatNote;
 @override final  int referenceBeat;
 @override final  String subBeats;
+@override final  String configTitle;
 
 /// Create a copy of PlayerConfig
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +243,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerConfig&&(identical(other.playerConfigNo, playerConfigNo) || other.playerConfigNo == playerConfigNo)&&(identical(other.createTime, createTime) || other.createTime == createTime)&&(identical(other.updateTime, updateTime) || other.updateTime == updateTime)&&(identical(other.bpm, bpm) || other.bpm == bpm)&&(identical(other.beatNum, beatNum) || other.beatNum == beatNum)&&(identical(other.beatNote, beatNote) || other.beatNote == beatNote)&&(identical(other.referenceBeat, referenceBeat) || other.referenceBeat == referenceBeat)&&(identical(other.subBeats, subBeats) || other.subBeats == subBeats));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerConfig&&(identical(other.playerConfigNo, playerConfigNo) || other.playerConfigNo == playerConfigNo)&&(identical(other.createTime, createTime) || other.createTime == createTime)&&(identical(other.updateTime, updateTime) || other.updateTime == updateTime)&&(identical(other.bpm, bpm) || other.bpm == bpm)&&(identical(other.beatNum, beatNum) || other.beatNum == beatNum)&&(identical(other.beatNote, beatNote) || other.beatNote == beatNote)&&(identical(other.referenceBeat, referenceBeat) || other.referenceBeat == referenceBeat)&&(identical(other.subBeats, subBeats) || other.subBeats == subBeats)&&(identical(other.configTitle, configTitle) || other.configTitle == configTitle));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,playerConfigNo,createTime,updateTime,bpm,beatNum,beatNote,referenceBeat,subBeats);
+int get hashCode => Object.hash(runtimeType,playerConfigNo,createTime,updateTime,bpm,beatNum,beatNote,referenceBeat,subBeats,configTitle);
 
 @override
 String toString() {
-  return 'PlayerConfig(playerConfigNo: $playerConfigNo, createTime: $createTime, updateTime: $updateTime, bpm: $bpm, beatNum: $beatNum, beatNote: $beatNote, referenceBeat: $referenceBeat, subBeats: $subBeats)';
+  return 'PlayerConfig(playerConfigNo: $playerConfigNo, createTime: $createTime, updateTime: $updateTime, bpm: $bpm, beatNum: $beatNum, beatNote: $beatNote, referenceBeat: $referenceBeat, subBeats: $subBeats, configTitle: $configTitle)';
 }
 
 
@@ -261,7 +263,7 @@ abstract mixin class _$PlayerConfigCopyWith<$Res> implements $PlayerConfigCopyWi
   factory _$PlayerConfigCopyWith(_PlayerConfig value, $Res Function(_PlayerConfig) _then) = __$PlayerConfigCopyWithImpl;
 @override @useResult
 $Res call({
- String playerConfigNo, String createTime, String updateTime, int bpm, int beatNum, int beatNote, int referenceBeat, String subBeats
+ String playerConfigNo, String createTime, String updateTime, int bpm, int beatNum, int beatNote, int referenceBeat, String subBeats, String configTitle
 });
 
 
@@ -278,7 +280,7 @@ class __$PlayerConfigCopyWithImpl<$Res>
 
 /// Create a copy of PlayerConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? playerConfigNo = null,Object? createTime = null,Object? updateTime = null,Object? bpm = null,Object? beatNum = null,Object? beatNote = null,Object? referenceBeat = null,Object? subBeats = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? playerConfigNo = null,Object? createTime = null,Object? updateTime = null,Object? bpm = null,Object? beatNum = null,Object? beatNote = null,Object? referenceBeat = null,Object? subBeats = null,Object? configTitle = null,}) {
   return _then(_PlayerConfig(
 playerConfigNo: null == playerConfigNo ? _self.playerConfigNo : playerConfigNo // ignore: cast_nullable_to_non_nullable
 as String,createTime: null == createTime ? _self.createTime : createTime // ignore: cast_nullable_to_non_nullable
@@ -288,6 +290,7 @@ as int,beatNum: null == beatNum ? _self.beatNum : beatNum // ignore: cast_nullab
 as int,beatNote: null == beatNote ? _self.beatNote : beatNote // ignore: cast_nullable_to_non_nullable
 as int,referenceBeat: null == referenceBeat ? _self.referenceBeat : referenceBeat // ignore: cast_nullable_to_non_nullable
 as int,subBeats: null == subBeats ? _self.subBeats : subBeats // ignore: cast_nullable_to_non_nullable
+as String,configTitle: null == configTitle ? _self.configTitle : configTitle // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

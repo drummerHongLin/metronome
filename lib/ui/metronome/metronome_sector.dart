@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -31,7 +33,9 @@ class MetronomeBody extends StatelessWidget {
                 child: Lottie.asset(lottieFile, controller: lottieController),
               ),
             ),
-            _DotNoteList(controller: beatController, beatNum: beatNum),
+            SizedBox(
+              height: 52,
+              child: _DotNoteList(controller: beatController, beatNum: beatNum)),
           ],
         ),
     );
@@ -55,17 +59,18 @@ class _DotNoteList extends AnimatedWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
-      child: Row(
+      child: 
+      Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           for (int i = 0; i < beatNum; i++)
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding:  EdgeInsets.symmetric(horizontal:  8.0-max((beatNum-8)/2,0),vertical: 8),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
-                width: 20,
-                height: 20,
+                width: 20-max((beatNum-8),0),
+                height: 20-max((beatNum-8),0),
                 decoration: BoxDecoration(
                   color:
                       i == _activeIndex

@@ -59,6 +59,48 @@ class ModifierSector extends StatelessWidget {
             context,
           ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
+  
+        SizedBox(
+          height: 60,
+          width: double.maxFinite,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: beatTypes.length,
+            padding: EdgeInsets.symmetric(vertical: 5),
+            itemBuilder: (ctx,index){
+              return  Card(
+                    margin: EdgeInsets.symmetric(horizontal: 10),
+                    child: SizedBox(
+                      width: 65,
+                      height: 50,
+                      child: Stack(
+                        children: [
+                          Positioned( top:4,right: 8,
+                            child: Text((index+1).toString(),style: TextStyle(fontSize: 6),)),
+                          Center(
+                          child: Builder(
+                            builder:
+                                (innerContext) => GestureDetector(
+                                  onTap:
+                                      () => showSelector(innerContext, index),
+                                  onVerticalDragStart:
+                                      (_) => showSelector(innerContext, index),
+                                  child: Image.asset(
+                                    beatTypes[index].path,
+                                    fit: BoxFit.scaleDown,
+                                    height: 40,
+                                    width: 40,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                          ),
+                        ),]
+                      ),
+                    ));
+            }),
+        )
+          /*
+        
         for (int j = 0; j < beatTypes.length / 4; j++)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -90,6 +132,8 @@ class ModifierSector extends StatelessWidget {
                 ),
             ],
           ),
+*/
+
       ],
     );
   }

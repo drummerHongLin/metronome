@@ -4,40 +4,39 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/configs/data_type.dart';
+import 'package:flutter_metronome/repo/model/player_config.dart';
+import 'package:flutter_metronome/repo/player_config_repo.dart';
 import 'package:flutter_metronome/service/audio/sound.dart';
+import 'package:flutter_metronome/utils/result.dart';
+import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
 
 class MainScreenViewModel extends ChangeNotifier {
-  MainScreenViewModel({
-    required int bpm,
-    required int beatNum,
-    required int beatNote,
-    required ReferenceBeat referenceBeat,
-    required List<BeatType> beatTypes,
-  }) : _bpm = bpm,
-       _beatNote = beatNote,
-       _beatNum = beatNum,
-       _referenceBeat = referenceBeat,
-       _beatTypes = beatTypes,
-       _lastBpm = bpm {
+  MainScreenViewModel({required PlayerConfigRepo configRepo})
+    : _configRepo = configRepo {
     _player = AudioPlayer();
     _player.setLoopMode(LoopMode.all);
     changePlayer();
   }
 
+  // 依赖注入
+  final PlayerConfigRepo _configRepo;
+
+  // 历史配置相关
+
+  ValueNotifier<PlayerConfigInfo?> currentConfig = ValueNotifier(null);
+
   // 定时器相关
   ValueNotifier<int> tRemind = ValueNotifier(0);
 
   void setTRemind(int m, int s) {
-    if(m+s>0) {
-       tRemind.value = m * 60 + s;
-       runningState.value = 1;
+    if (m + s > 0) {
+      tRemind.value = m * 60 + s;
+      runningState.value = 1;
+    } else {
+      tRemind.value = 0;
+      runningState.value = 0;
     }
-    else {
-       tRemind.value = 0;
-       runningState.value = 0;
-    }
-   
   }
 
   Timer? _timer;
@@ -46,7 +45,7 @@ class MainScreenViewModel extends ChangeNotifier {
 
   // 播放器相关的参数
   // 1.bpm
-  int _bpm;
+  int _bpm = 60;
   set bpm(v) {
     if (v != _bpm) {
       _isChange = true;
@@ -54,7 +53,7 @@ class MainScreenViewModel extends ChangeNotifier {
     }
   }
 
-  int _lastBpm;
+  int _lastBpm = 60;
   set lastBpm(v) {
     _lastBpm = v;
   }
@@ -74,7 +73,7 @@ class MainScreenViewModel extends ChangeNotifier {
   get bpm => _bpm;
 
   // 2. 节拍数
-  int _beatNum;
+  int _beatNum = 4;
   set beatNum(v) {
     if (v != _beatNum) {
       _isChange = true;
@@ -92,7 +91,7 @@ class MainScreenViewModel extends ChangeNotifier {
   int get beatNum => _beatNum;
 
   // 3. 节拍音符
-  int _beatNote;
+  int _beatNote = 4;
   set beatNote(v) {
     if (v != _beatNote) {
       _isChange = true;
@@ -103,7 +102,7 @@ class MainScreenViewModel extends ChangeNotifier {
   get beatNote => _beatNote;
 
   // 4. 参考音符
-  ReferenceBeat _referenceBeat;
+  ReferenceBeat _referenceBeat = ReferenceBeat.quarter_note;
   ReferenceBeat get referenceBeat => _referenceBeat;
   set referenceBeat(v) {
     if (v != _referenceBeat) {
@@ -113,7 +112,7 @@ class MainScreenViewModel extends ChangeNotifier {
   }
 
   // 5. 细分节拍
-  List<BeatType> _beatTypes;
+  List<BeatType> _beatTypes = [BeatType.A, BeatType.A, BeatType.A, BeatType.A];
 
   get beatTypes => _beatTypes;
 
@@ -175,37 +174,37 @@ class MainScreenViewModel extends ChangeNotifier {
   }
 
   // 函数功能
-  void startTimer(){
+  void startTimer() {
     runningState.value = 2;
-    _timer = Timer.periodic(Duration(seconds: 1), (t){
-       tRemind.value--;
-       if(tRemind.value <=0){
-         t.cancel();
-         runningState.value = 0;
-         tRemind.value = 0;
-       }
+    _timer = Timer.periodic(Duration(seconds: 1), (t) {
+      tRemind.value--;
+      if (tRemind.value <= 0) {
+        t.cancel();
+        runningState.value = 0;
+        tRemind.value = 0;
+      }
     });
   }
-  void endTimer(){
+
+  void endTimer() {
     runningState.value = 0;
-    if(_timer!=null) _timer!.cancel();
+    if (_timer != null) _timer!.cancel();
     _timer = null;
     tRemind.value = 0;
   }
 
-  void pauseTimer(){
+  void pauseTimer() {
     runningState.value = 1;
-    if(_timer!=null) _timer!.cancel();
+    if (_timer != null) _timer!.cancel();
     _timer = null;
   }
 
-
-  void startPlayer(){
-   _isPlaying = true;
+  void startPlayer() {
+    _isPlaying = true;
     _player.play();
   }
 
-  void pausePlayer(){
+  void pausePlayer() {
     _isPlaying = false;
     _player.pause();
   }
@@ -213,14 +212,14 @@ class MainScreenViewModel extends ChangeNotifier {
   // 播放
   void play() {
     startPlayer();
-    if(runningState.value == 1) startTimer(); // 暂停
+    if (runningState.value == 1) startTimer(); // 暂停
     notifyListeners();
   }
 
   // 手动暂停
   void pause() {
     pausePlayer();
-    if(runningState.value == 2) pauseTimer();
+    if (runningState.value == 2) pauseTimer();
     notifyListeners();
   }
 
@@ -267,5 +266,49 @@ class MainScreenViewModel extends ChangeNotifier {
     _referenceBeat = referenceBeat;
     _beatTypes = beatTypes;
     changePlayer();
+  }
+
+  // 播放设置相关
+
+  PlayerConfigInfo createConfigByCurrentPare(String? title){
+        final playerConfigNo = "PC${DateTime.now().millisecondsSinceEpoch}";
+     return PlayerConfigInfo(
+        playerConfigNo: playerConfigNo,
+        createTime: DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now()),
+        updateTime: DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now()),
+        bpm: _bpm,
+        beatNum: _beatNum,
+        beatNote: _beatNote,
+        referenceBeat: _referenceBeat,
+        subBeats: _beatTypes,
+        configTitle: title??"新建节拍记录 - ${DateFormat('yyyy-MM-dd').format(DateTime.now())}"
+      );
+  }
+
+  // 1. 保存当前系统配置
+  Future<void> saveConfig({String? title, PlayerConfigInfo? pc}) async {
+    late Result rst;
+    if(pc != null ){
+      pc.configTitle = title!;
+      rst = await _configRepo.createNewPlayerConfig(pc);
+    }
+    else {
+      pc = currentConfig.value!;
+      pc.bpm = _bpm;
+      pc.beatNote = _beatNote;
+      pc.beatNum = _beatNum;
+      pc.referenceBeat = _referenceBeat;
+      pc.subBeats = _beatTypes;
+      pc.updateTime = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
+      rst = await _configRepo.updatePlayerConfig(pc);
+    } 
+    rst.when(
+      success: (v) {
+        currentConfig.value = pc;
+      },
+      failure: (_, __) {
+        currentConfig.value = null;
+      },
+    );
   }
 }

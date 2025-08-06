@@ -18,7 +18,8 @@ abstract class PlayerConfig with _$PlayerConfig {
     required int beatNum,
     required int beatNote,
     required int referenceBeat,
-    required String subBeats
+    required String subBeats,
+    required String configTitle
   }) = _PlayerConfig;
 
   factory PlayerConfig.fromJson(Map<String,dynamic> json) => _$PlayerConfigFromJson(json);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_metronome/ui/utils/arrow_button.dart';
+import 'package:flutter_metronome/ui/utils/input_container.dart';
 
 class TimerSetter extends StatefulWidget {
   const TimerSetter({super.key});
@@ -201,27 +202,7 @@ class _TimerInput extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title),
-        Container(
-          height: 50,
-          width: 100,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceDim,
-            /*border: Border.all(
-              color: Theme.of(context).colorScheme.outline,
-              width: 1,
-            ), */
-            borderRadius: BorderRadius.circular(4),
-            boxShadow: focusNode.hasFocus
-                ? [
-                    BoxShadow(
-                      color: Theme.of(context).colorScheme.outline,
-                      blurRadius: 4,
-                      spreadRadius: 1,
-                    ),
-                  ]
-                : [],
-          ),
-          child: Row(
+          InputContainer(focusNode: focusNode, height: 50, width: 100, child:  Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(

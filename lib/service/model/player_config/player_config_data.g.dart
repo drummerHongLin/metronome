@@ -16,6 +16,7 @@ _PlayerConfig _$PlayerConfigFromJson(Map<String, dynamic> json) =>
       beatNote: (json['beatNote'] as num).toInt(),
       referenceBeat: (json['referenceBeat'] as num).toInt(),
       subBeats: json['subBeats'] as String,
+      configTitle: json['configTitle'] as String,
     );
 
 Map<String, dynamic> _$PlayerConfigToJson(_PlayerConfig instance) =>
@@ -28,4 +29,5 @@ Map<String, dynamic> _$PlayerConfigToJson(_PlayerConfig instance) =>
       'beatNote': instance.beatNote,
       'referenceBeat': instance.referenceBeat,
       'subBeats': instance.subBeats,
+      'configTitle': instance.configTitle,
     };

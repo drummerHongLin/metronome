@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/configs/data_type.dart';
 import 'package:flutter_metronome/configs/default.dart';
+import 'package:flutter_metronome/ui/config_his/config_component.dart';
+import 'package:flutter_metronome/ui/config_his/create_config_panel.dart';
 import 'package:flutter_metronome/ui/main_screen_view_model.dart';
 import 'package:flutter_metronome/ui/buttons/buttone_sector.dart';
 import 'package:flutter_metronome/ui/drawer/custom_drawer.dart';
@@ -139,8 +142,18 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     await afterChange();
   }
 
-  timingOut(){
-    if(widget.viewModel.runningState.value == 0) pause();
+  timingOut() {
+    if (widget.viewModel.runningState.value == 0) pause();
+  }
+
+  showConfigCreate() async {
+    beforeChange();
+    final config = widget.viewModel.createConfigByCurrentPare("");
+    final rst =  await Navigator.push(context,
+    PopUpRouteWrapper<String>(child: CreateConfigPanel(configInfo: config,)),
+    );
+    if(rst != null ) await widget.viewModel.saveConfig(title: rst,pc: config);
+    await afterChange();
   }
 
   Future<void> afterChange() async {
@@ -244,36 +257,14 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                   beatTypes: widget.viewModel.beatTypes,
                   showSelector: showSubBeatSelector,
                 ),
-                Row(
-                  children: [
-                    TextButton.icon(
-                      onPressed: () {},
-                      label: Text("新建练习节拍"),
-                      icon: Icon(Icons.music_note),
-                    ),
-                    Spacer(),
-                    InkWell(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsetsGeometry.symmetric(
-                            horizontal: 5,
-                            vertical: 2,
-                          ),
-                          child: Text(
-                            "保存",
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                  ],
+                ValueListenableBuilder(
+                  valueListenable: widget.viewModel.currentConfig,
+                  builder: (c, v, child) {
+                    if(v == null) return child!;
+                    return 
+                    ConfigComponent(currentTitle: v.configTitle, showSave: true, onTap: widget.viewModel.saveConfig);
+                  },
+                  child: ConfigComponent(currentTitle: "新建节奏配置", showSave: false, onTap:showConfigCreate),
                 ),
                 ButtoneSector(
                   onPlayPressed: () {

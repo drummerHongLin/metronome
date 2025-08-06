@@ -21,6 +21,7 @@ class PlayerConfigRepo {
         beatNote: p.beatNote,
         referenceBeat: p.referenceBeat.index,
         subBeats: s,
+        configTitle: p.configTitle
       );
       await _playerConfigService.createPlayerConfig(pd);
       return Success(null);
@@ -41,6 +42,7 @@ class PlayerConfigRepo {
         beatNote: p.beatNote,
         referenceBeat: p.referenceBeat.index,
         subBeats: s,
+        configTitle: p.configTitle
       );
       await _playerConfigService.updatePlayerConfig(pd);
       return Success(null);
@@ -57,7 +59,17 @@ class PlayerConfigRepo {
       return Failure("刪除节拍失败!", e);
     }
   }
-  Future<Result<List<PlayerConfigInfo>>> getPlayerConfigs(int offset, int limit) async {
-    
-  } 
+
+  Future<Result<List<PlayerConfigInfo>>> getPlayerConfigs(
+    int offset,
+    int limit,
+  ) async {
+    try {
+      final rst = await _playerConfigService.getPlayerConfigs(offset, limit);
+      final pList = rst.map((p) => PlayerConfigInfo.fromData(p)).toList();
+      return Success(pList);
+    } on Exception catch (e) {
+      return Failure("获取历史节拍记录失败!", e);
+    }
+  }
 }

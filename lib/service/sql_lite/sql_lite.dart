@@ -56,7 +56,8 @@ class SqliteDb {
         beatNum INTEGER NOT NULL,
         beatNote INTEGER NOT NULL,
         referenceBeat INTEGER,
-        subBeats TEXT
+        subBeats TEXT,
+        configTitle TEXT
       )
     ''');
   }
