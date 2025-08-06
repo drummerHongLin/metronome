@@ -10,6 +10,9 @@ import 'package:flutter_metronome/ui/metronome/metronome_sector.dart';
 import 'package:flutter_metronome/ui/modifier/modifier_sector.dart';
 import 'package:flutter_metronome/ui/overlay/custom_overlay.dart';
 import 'package:flutter_metronome/ui/selector/selector_sector.dart';
+import 'package:flutter_metronome/ui/timer/timer_component.dart';
+import 'package:flutter_metronome/ui/timer/timer_setter.dart';
+import 'package:flutter_metronome/ui/utils/popuprouter_wrapper.dart';
 
 class MainScreen extends StatefulWidget {
   final MainScreenViewModel viewModel;
@@ -39,13 +42,14 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     lottieController.duration = Duration(
       milliseconds: widget.viewModel.duration * 2,
     );
+    widget.viewModel.runningState.addListener(timingOut);
   }
 
   @override
   void dispose() {
     beatController.dispose();
     lottieController.dispose();
-    widget.viewModel.dispose();
+    widget.viewModel.runningState.removeListener(timingOut);
     super.dispose();
   }
 
@@ -123,6 +127,22 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     await afterChange();
   }
 
+  showTimerSetter() async {
+    beforeChange();
+    final rst = await Navigator.push(
+      context,
+      PopUpRouteWrapper<(int, int)>(child: TimerSetter()),
+    );
+    if (rst != null) {
+      widget.viewModel.setTRemind(rst.$1, rst.$2);
+    }
+    await afterChange();
+  }
+
+  timingOut(){
+    if(widget.viewModel.runningState.value == 0) pause();
+  }
+
   Future<void> afterChange() async {
     if (!widget.viewModel.isChange && widget.viewModel.isPlaying) {
       play();
@@ -178,26 +198,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           },
         ),
         actions: [
-          ValueListenableBuilder(
-            valueListenable: widget.viewModel.runningState,
-            builder: (ctx, v, child) {
-              if (v == 0) return child!;
-              return ValueListenableBuilder(
-                valueListenable: widget.viewModel.tRemind,
-                builder: (ctx, t, c) {
-                  return TextButton.icon(
-                    onPressed: () {},
-                    label: Text("${t ~/ 60} : ${t % 60}"),
-                    icon: Icon(Icons.close),
-                  );
-                },
-              );
-            },
-            child: TextButton.icon(
-              onPressed: () {},
-              label: Text("定时器"),
-              icon: Icon(Icons.alarm),
-            ),
+          TimerComponent(
+            runningState: widget.viewModel.runningState,
+            tRemind: widget.viewModel.tRemind,
+            onSetTimer: showTimerSetter,
+            onCloseTimer: widget.viewModel.endTimer,
           ),
         ],
       ),
@@ -247,7 +252,27 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                       icon: Icon(Icons.music_note),
                     ),
                     Spacer(),
-                    TextButton(onPressed: () {}, child: Text("保存")),
+                    InkWell(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsetsGeometry.symmetric(
+                            horizontal: 5,
+                            vertical: 2,
+                          ),
+                          child: Text(
+                            "保存",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
                   ],
                 ),
                 ButtoneSector(

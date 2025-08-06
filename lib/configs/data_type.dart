@@ -1,9 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-
-
-
-
 enum SoundType {
   com,
   hev,
@@ -47,31 +43,46 @@ enum BeatType {
       BeatType.dddB0 => [1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0],
     };
   }
+
   String get path => 'assets/images/$name.webp';
+
+  factory BeatType.fromIndex(int i) {
+    assert(i >= 0 && i < BeatType.values.length);
+    return BeatType.values[i];
+  }
 }
 
 // 节拍参考音符
 
-enum ReferenceBeat { whole_note,half_note,quarter_note,   quaver, semi_quaver;
+enum ReferenceBeat {
+  whole_note,
+  half_note,
+  quarter_note,
+  quaver,
+  semi_quaver;
 
-  int value(){
-    return switch(this){
+  int value() {
+    return switch (this) {
       ReferenceBeat.whole_note => 1,
       ReferenceBeat.half_note => 2,
-      ReferenceBeat.quarter_note =>4,
+      ReferenceBeat.quarter_note => 4,
       ReferenceBeat.quaver => 8,
-      ReferenceBeat.semi_quaver => 16
+      ReferenceBeat.semi_quaver => 16,
     };
   }
 
   String get path => 'assets/images/$name.webp';
 
+  factory ReferenceBeat.fromIndex(int i) {
+    assert(i >= 0 && i < ReferenceBeat.values.length);
+    return ReferenceBeat.values[i];
+  }
 }
 
-enum Product { one_cup_coffee ;
+enum Product {
+  one_cup_coffee;
 
-int get price => switch(this){
-  Product.one_cup_coffee => 1
-};
-
-} 
+  int get price => switch (this) {
+    Product.one_cup_coffee => 1,
+  };
+}

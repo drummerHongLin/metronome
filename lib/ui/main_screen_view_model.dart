@@ -29,7 +29,15 @@ class MainScreenViewModel extends ChangeNotifier {
   ValueNotifier<int> tRemind = ValueNotifier(0);
 
   void setTRemind(int m, int s) {
-    tRemind.value = m * 60 + s;
+    if(m+s>0) {
+       tRemind.value = m * 60 + s;
+       runningState.value = 1;
+    }
+    else {
+       tRemind.value = 0;
+       runningState.value = 0;
+    }
+   
   }
 
   Timer? _timer;
@@ -168,11 +176,13 @@ class MainScreenViewModel extends ChangeNotifier {
 
   // 函数功能
   void startTimer(){
-    runningState.value = 1;
+    runningState.value = 2;
     _timer = Timer.periodic(Duration(seconds: 1), (t){
        tRemind.value--;
-       if(tRemind.value ==0){
+       if(tRemind.value <=0){
          t.cancel();
+         runningState.value = 0;
+         tRemind.value = 0;
        }
     });
   }
@@ -184,24 +194,33 @@ class MainScreenViewModel extends ChangeNotifier {
   }
 
   void pauseTimer(){
-    runningState.value = 2;
+    runningState.value = 1;
     if(_timer!=null) _timer!.cancel();
     _timer = null;
   }
 
+
+  void startPlayer(){
+   _isPlaying = true;
+    _player.play();
+  }
+
+  void pausePlayer(){
+    _isPlaying = false;
+    _player.pause();
+  }
+
   // 播放
   void play() {
-    _isPlaying = true;
-    _player.play();
-    startTimer();
+    startPlayer();
+    if(runningState.value == 1) startTimer(); // 暂停
     notifyListeners();
   }
 
   // 手动暂停
   void pause() {
-    _isPlaying = false;
-    _player.pause();
-    pauseTimer();
+    pausePlayer();
+    if(runningState.value == 2) pauseTimer();
     notifyListeners();
   }
 

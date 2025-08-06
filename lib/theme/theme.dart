@@ -18,7 +18,8 @@ class MaterialTheme {
       surface: Colors.white,
       onSurface: Colors.black,
       shadow: Colors.black,
-      surfaceDim: Color.fromARGB(255, 226, 226, 226)
+      surfaceDim: Color.fromARGB(255, 226, 226, 226),
+      outline: Color.fromARGB(255, 40, 40, 40)
     );
   }
 
@@ -39,7 +40,8 @@ class MaterialTheme {
       surface: Colors.black,
       onSurface: Colors.white,
       shadow: Colors.white,
-      surfaceDim: Color.fromARGB(255, 40, 40, 40)
+      surfaceDim: Color.fromARGB(255, 40, 40, 40),
+      outline: Color.fromARGB(255, 226, 226, 226)
     );
   }
 

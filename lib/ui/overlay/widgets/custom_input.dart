@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_metronome/ui/utils/arrow_button.dart';
 
 class CustomInput extends StatefulWidget {
   final int bpm;
@@ -132,11 +133,11 @@ class _CustomInputState extends State<CustomInput> {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            _ArrowButton(
+                            ArrowButton(
                               icon: Icons.keyboard_arrow_up,
                               onPressed: _increment,
                             ),
-                            _ArrowButton(
+                            ArrowButton(
                               icon: Icons.keyboard_arrow_down,
                               onPressed: _decrement,
                             ),
@@ -150,27 +151,6 @@ class _CustomInputState extends State<CustomInput> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ArrowButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  const _ArrowButton({required this.icon, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 20,
-      width: 20,
-      child: IconButton(
-        onPressed: onPressed,
-        icon: Icon(icon, size: 18),
-        padding: EdgeInsets.zero,
-        splashRadius: 12,
       ),
     );
   }

@@ -11,14 +11,18 @@ class CenterInfo extends StatelessWidget {
     final mediaSize = MediaQuery.of(context).size;
 
     return Center(
-      child: SizedBox(
-        height: mediaSize.height * .5,
-        width: mediaSize.width * 0.75,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: mediaSize.height * .5,
+          maxWidth: mediaSize.width * 0.75,
+          minWidth: mediaSize.width * 0.75,
+        ),
         child: Card(
           elevation: 3,
           child: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   title,
