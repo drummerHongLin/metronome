@@ -63,19 +63,18 @@ class _CreateConfigPanelState extends State<CreateConfigPanel> {
                     ),
                   ),
                 ),
-        Text("当前参数："),
+                Text("当前参数："),
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(4),
                     color: Theme.of(
-                    context,
-                  ).colorScheme.surfaceDim.withAlpha(125),
+                      context,
+                    ).colorScheme.surfaceDim.withAlpha(125),
                   ),
                   padding: EdgeInsets.all(5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-              
                       Row(
                         children: [
                           Text("BPM: ${widget.configInfo.bpm}"),
@@ -124,7 +123,7 @@ class _CreateConfigPanelState extends State<CreateConfigPanel> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context,controller.text);
+                        Navigator.pop(context, controller.text);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,

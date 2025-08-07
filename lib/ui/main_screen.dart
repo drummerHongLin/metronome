@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/configs/data_type.dart';
 import 'package:flutter_metronome/configs/default.dart';
+import 'package:flutter_metronome/repo/model/player_config.dart';
 import 'package:flutter_metronome/ui/config_his/config_component.dart';
+import 'package:flutter_metronome/ui/config_his/config_his_panel.dart';
 import 'package:flutter_metronome/ui/config_his/create_config_panel.dart';
 import 'package:flutter_metronome/ui/main_screen_view_model.dart';
 import 'package:flutter_metronome/ui/buttons/buttone_sector.dart';
@@ -46,6 +47,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       milliseconds: widget.viewModel.duration * 2,
     );
     widget.viewModel.runningState.addListener(timingOut);
+    widget.viewModel.snackBarMessage.addListener(_showSnackBar);
   }
 
   @override
@@ -53,6 +55,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     beatController.dispose();
     lottieController.dispose();
     widget.viewModel.runningState.removeListener(timingOut);
+    widget.viewModel.snackBarMessage.removeListener(_showSnackBar);
     super.dispose();
   }
 
@@ -149,10 +152,24 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   showConfigCreate() async {
     beforeChange();
     final config = widget.viewModel.createConfigByCurrentPare("");
-    final rst =  await Navigator.push(context,
-    PopUpRouteWrapper<String>(child: CreateConfigPanel(configInfo: config,)),
+    final rst = await Navigator.push(
+      context,
+      PopUpRouteWrapper<String>(child: CreateConfigPanel(configInfo: config)),
     );
-    if(rst != null ) await widget.viewModel.saveConfig(title: rst,pc: config);
+    if (rst != null) await widget.viewModel.saveConfig(title: rst, pc: config);
+    await afterChange();
+  }
+
+  showConfigHisList() async {
+    beforeChange();
+    widget.viewModel.getConfigHis.execute();
+    final rst = await Navigator.push(
+      context,
+      PopUpRouteWrapper<PlayerConfigInfo>(
+        child: ConfigHisPanel(viewModel: widget.viewModel),
+      ),
+    );
+    if (rst != null) widget.viewModel.setPlayerByConfig(rst);
     await afterChange();
   }
 
@@ -178,8 +195,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     lottieController.stop();
   }
 
-  void showSnackBar(String content) {
-    final snackBar = SnackBar(content: Text(content));
+  void _showSnackBar() {
+    if(widget.viewModel.snackBarMessage.value == null) return;
+    final snackBar = SnackBar(content: Text(widget.viewModel.snackBarMessage.value!,style: TextStyle(fontSize: 10),));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
@@ -260,11 +278,20 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 ValueListenableBuilder(
                   valueListenable: widget.viewModel.currentConfig,
                   builder: (c, v, child) {
-                    if(v == null) return child!;
-                    return 
-                    ConfigComponent(currentTitle: v.configTitle, showSave: true, onTap: widget.viewModel.saveConfig);
+                    if (v == null) return child!;
+                    return ConfigComponent(
+                      currentTitle: v.configTitle,
+                      showSave: true,
+                      onTap: widget.viewModel.saveConfig,
+                      showHisList: showConfigHisList,
+                    );
                   },
-                  child: ConfigComponent(currentTitle: "新建节奏配置", showSave: false, onTap:showConfigCreate),
+                  child: ConfigComponent(
+                    currentTitle: "新建节奏配置",
+                    showSave: false,
+                    onTap: showConfigCreate,
+                    showHisList: showConfigHisList,
+                  ),
                 ),
                 ButtoneSector(
                   onPlayPressed: () {

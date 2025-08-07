@@ -52,34 +52,34 @@ class _TimerSetterState extends State<TimerSetter> {
   }
 
   void onIncrease(bool minute) {
-    late TextEditingController _c;
+    late TextEditingController c;
     if (minute) {
-      _c = _controllerLeft;
+      c = _controllerLeft;
     } else {
-      _c = _controllerRight;
+      c = _controllerRight;
     }
 
-    int v = int.parse(_c.text);
+    int v = int.parse(c.text);
     if (v < 59) {
       setState(() {
         v++;
-        _c.text = v.toString();
+        c.text = v.toString();
       });
     }
   }
 
   void onDecrease(bool minute) {
-    late TextEditingController _c;
+    late TextEditingController c;
     if (minute) {
-      _c = _controllerLeft;
+      c = _controllerLeft;
     } else {
-      _c = _controllerRight;
+      c = _controllerRight;
     }
-    int v = int.parse(_c.text);
+    int v = int.parse(c.text);
     if (v > 0) {
       setState(() {
         v--;
-        _c.text = v.toString();
+        c.text = v.toString();
       });
     }
   }

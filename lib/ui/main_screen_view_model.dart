@@ -7,6 +7,7 @@ import 'package:flutter_metronome/configs/data_type.dart';
 import 'package:flutter_metronome/repo/model/player_config.dart';
 import 'package:flutter_metronome/repo/player_config_repo.dart';
 import 'package:flutter_metronome/service/audio/sound.dart';
+import 'package:flutter_metronome/utils/command.dart';
 import 'package:flutter_metronome/utils/result.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
@@ -16,8 +17,14 @@ class MainScreenViewModel extends ChangeNotifier {
     : _configRepo = configRepo {
     _player = AudioPlayer();
     _player.setLoopMode(LoopMode.all);
+    getConfigHis = Command0(_getConfigHis);
+    deleteConfig = Command1<void,PlayerConfigInfo>(_deleteConfig);
     changePlayer();
   }
+
+  // 消息提示组件
+
+  ValueNotifier<String?> snackBarMessage = ValueNotifier(null);
 
   // 依赖注入
   final PlayerConfigRepo _configRepo;
@@ -25,6 +32,11 @@ class MainScreenViewModel extends ChangeNotifier {
   // 历史配置相关
 
   ValueNotifier<PlayerConfigInfo?> currentConfig = ValueNotifier(null);
+
+  List<PlayerConfigInfo> configHis = []; 
+
+  late final Command0 getConfigHis;
+  late final Command1 deleteConfig;
 
   // 定时器相关
   ValueNotifier<int> tRemind = ValueNotifier(0);
@@ -270,29 +282,30 @@ class MainScreenViewModel extends ChangeNotifier {
 
   // 播放设置相关
 
-  PlayerConfigInfo createConfigByCurrentPare(String? title){
-        final playerConfigNo = "PC${DateTime.now().millisecondsSinceEpoch}";
-     return PlayerConfigInfo(
-        playerConfigNo: playerConfigNo,
-        createTime: DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now()),
-        updateTime: DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now()),
-        bpm: _bpm,
-        beatNum: _beatNum,
-        beatNote: _beatNote,
-        referenceBeat: _referenceBeat,
-        subBeats: _beatTypes,
-        configTitle: title??"新建节拍记录 - ${DateFormat('yyyy-MM-dd').format(DateTime.now())}"
-      );
+  PlayerConfigInfo createConfigByCurrentPare(String? title) {
+    final playerConfigNo = "PC${DateTime.now().millisecondsSinceEpoch}";
+    return PlayerConfigInfo(
+      playerConfigNo: playerConfigNo,
+      createTime: DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now()),
+      updateTime: DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now()),
+      bpm: _bpm,
+      beatNum: _beatNum,
+      beatNote: _beatNote,
+      referenceBeat: _referenceBeat,
+      subBeats: _beatTypes,
+      configTitle:
+          title ??
+          "新建节拍记录 - ${DateFormat('yyyy-MM-dd').format(DateTime.now())}",
+    );
   }
 
   // 1. 保存当前系统配置
   Future<void> saveConfig({String? title, PlayerConfigInfo? pc}) async {
     late Result rst;
-    if(pc != null ){
+    if (pc != null) {
       pc.configTitle = title!;
       rst = await _configRepo.createNewPlayerConfig(pc);
-    }
-    else {
+    } else {
       pc = currentConfig.value!;
       pc.bpm = _bpm;
       pc.beatNote = _beatNote;
@@ -301,14 +314,55 @@ class MainScreenViewModel extends ChangeNotifier {
       pc.subBeats = _beatTypes;
       pc.updateTime = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
       rst = await _configRepo.updatePlayerConfig(pc);
-    } 
+    }
     rst.when(
       success: (v) {
         currentConfig.value = pc;
+        snackBarMessage.value = '保存设置成功! - ${pc!.configTitle}';
+      },
+      failure: (m, __) {
+        currentConfig.value = null;
+        snackBarMessage.value = m;
+      },
+    );
+  }
+
+  // 2. 获取历史配置信息
+  Future<Result<void>> _getConfigHis() async {
+    final offset = configHis.length;
+    final limit = 5;
+    final rst = await _configRepo.getPlayerConfigs(offset, limit);
+    rst.when(
+      success: (v) {
+        configHis.addAll(v);
+        return Success(null);
       },
       failure: (_, __) {
-        currentConfig.value = null;
+        return Failure("加载配置失败!");
       },
+    );
+    return rst;
+  }
+
+  // 3. 删除配置信息
+  Future<Result<void>> _deleteConfig(PlayerConfigInfo p) async {
+      if(currentConfig.value != null && currentConfig.value!.playerConfigNo == p.playerConfigNo) currentConfig.value = null;
+      final rst = await _configRepo.deletePlayerConfig(p.playerConfigNo);
+      rst.when(success: (v){
+        configHis.removeWhere((c)=>c.playerConfigNo == p.playerConfigNo);
+      }, failure: (_,__){});
+      return rst;
+  }
+
+  // 4. 更新当前播放器
+  void setPlayerByConfig(PlayerConfigInfo p){
+    currentConfig.value = p;
+    resetPlayer(
+      p.bpm,
+      p.beatNum,
+      p.beatNote,
+      p.referenceBeat,
+      p.subBeats
     );
   }
 }

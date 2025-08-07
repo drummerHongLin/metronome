@@ -137,7 +137,7 @@ class PlayerConfigDbClient extends PlayerConfigService {
   @override
   Future<List<PlayerConfig>> getPlayerConfigs(int offset, int limit) async {
     final db = await SqliteDb.instance.database;
-    final rst = await db.query('player_config', limit: limit, offset: offset);
+    final rst = await db.query('player_config', limit: limit, offset: offset,orderBy: "createTime");
 
     final playerConfigList = rst.map((e) => PlayerConfig.fromJson(e)).toList();
 

@@ -23,12 +23,10 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
     super.initState();
     _controller.text = sponsorMoney.toString();
     viewModel = context.read<SponsorshipViewModel>();
-    viewModel.msg.addListener(showSnackBar);
   }
 
   @override
   void dispose() {
-    viewModel.msg.removeListener(showSnackBar);
     super.dispose();
   }
 
@@ -52,24 +50,15 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
     });
   }
 
-  void showSnackBar({String? msg}) {
-    final content = msg ?? viewModel.msg.value;
-    final snackBar = SnackBar(content: Text(content));
-
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
   Widget _buildChild() {
     return ListenableBuilder(
       listenable: viewModel.invokePurchase,
       builder: (ctx, child) {
-        if(viewModel.invokePurchase.running) {
+        if (viewModel.invokePurchase.running) {
           return Stack(
             alignment: AlignmentDirectional.center,
-            children: [
-            child!,
-            const CircularProgressIndicator()
-          ],);
+            children: [child!, const CircularProgressIndicator()],
+          );
         }
         return child!;
       },
@@ -77,10 +66,14 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
         spacing: 30,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: Text(
-              "给小鸿倒 $cupOfCoffee 杯卡布奇诺~",
-              style: Theme.of(context).textTheme.labelLarge,
+            padding: const EdgeInsets.only(top: 10),
+            child: ValueListenableBuilder(
+              valueListenable: viewModel.msg,
+              builder: (ctx, v, child) {
+                if (v.isEmpty) return child!;
+                return Text(v, style: TextStyle(color: Colors.red));
+              },
+              child: Text('虚拟商品购买后不支持无理由退款，需要退款请与小鸿联系，谢谢支持🙏', style: TextStyle(color: Colors.red)),
             ),
           ),
           Row(
