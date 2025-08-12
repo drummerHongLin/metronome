@@ -9,16 +9,36 @@ import StoreKit
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
+    let paymentChannel = FlutterMethodChannel(
+        name: "com.jinghong.metronome/purchase", binaryMessenger: controller.binaryMessenger)
+    
+    StoreManager.shared.startTransactionListener(){
+          (transactionInfo) in
+        self.transactionUpdate(channel:paymentChannel , transactionInfo:transactionInfo)
+      }
+      
     Task{
       try?  await StoreManager.shared.loadProducts();
     }
-    let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
-    let paymentChannel = FlutterMethodChannel(
-      name: "com.jinghong.metronome/purchase", binaryMessenger: controller.binaryMessenger)
     paymentChannel.setMethodCallHandler({
-      [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-      if call.method == "invokePurchase" {
+          [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
+          if call.method == "invokePurchase" {
+              self?.invokePurchase(call: call, result: result)
+          }
+          else {
+              result(FlutterMethodNotImplemented)
+          }
+      }
+        )
+    GeneratedPluginRegistrant.register(with: self)
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
     
+    // 和flutter通信区域
+    // 1. 监听调用区域
+    private func invokePurchase(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let argStringTemp = call.arguments,
               let argString = argStringTemp as? String,
               let argData = argString.data(using: .utf8)
@@ -45,18 +65,23 @@ import StoreKit
                                       details: nil))
               return
           }
-
-
-      }
-        else {
-            result(FlutterMethodNotImplemented)
+    
+    }
+    
+    // 2. 主动调用区域
+    private func transactionUpdate(channel:FlutterMethodChannel, transactionInfo:String?){
+        
+        let c = transactionInfo ?? "false"
+        
+        
+        channel.invokeMethod("updateTransaction", arguments: c) { result in
+            guard let isSucess = result as? Bool
+            else{
+                print("更新交易数据异常")
+                return
+            }
+            print("更新交易数据成功")
         }
-    })
-    GeneratedPluginRegistrant.register(with: self)
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-  }
-
-
-  
+    }
 }
 

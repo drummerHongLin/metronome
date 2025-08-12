@@ -9,6 +9,7 @@ enum IapError: Error {
     case ProductNotLoaded
     case PurchaseCanceled
     case AccountIdError
+    case FailToUpdate
 }
 
 extension IapError: LocalizedError {
@@ -20,6 +21,8 @@ extension IapError: LocalizedError {
             return NSLocalizedString("用户取消购买", comment: "")
         case .AccountIdError:
             return NSLocalizedString("用户ID错误", comment: "")
+        case .FailToUpdate:
+            return NSLocalizedString("交易更新失败", comment: "")
         }
     }
 }
@@ -32,8 +35,13 @@ class StoreManager {
     private let productIdentifiers: Set<String> = [
         "onecupofcoffee"
     ]
+    // 交易更新任务
+    private var transactionUpdatesTask: Task<Void, Never>?
+    
+    
     var products: [Product] = [Product]()
-
+    
+    // 1. 加载已建档商品
     func loadProducts() async throws {
         // 如果已经获取过了，那么就不获取了
         guard products.isEmpty else {
@@ -46,7 +54,7 @@ class StoreManager {
         products = appProducts
 
     }
-
+    // 2. 调起系统支付
     func invokePurchase(purchaseInfo:PurchaseInfo, completion: @escaping (String?, Error?) -> Void)
     {
         Task {
@@ -94,6 +102,33 @@ class StoreManager {
 
             return
         }
+    }
+    
+    // 3. 监控交易更新，如应用停止后购买
+    func startTransactionListener(completion: @escaping (String?) -> Void) {
+        // 确保只创建一个监听任务
+        guard transactionUpdatesTask == nil else { return }
+        
+        transactionUpdatesTask = Task(priority: .background) {
+            for await update in Transaction.updates {
+                await self.handle(transaction: update,completion: completion)
+            }
+        }
+    }
+    
+    
+    private func handle(transaction: VerificationResult<Transaction>, completion: @escaping (String?) -> Void) async {
+        guard case .verified(let tx) = transaction else {
+            // 验证失败：记录日志
+            completion(nil)
+            return
+        }
+        
+        // 通知购买成功
+        completion(tx.jsonRepresentation.base64EncodedString())
+        
+        // 结束交易（必须调用）
+        await tx.finish()
     }
 
 }
