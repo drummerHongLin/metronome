@@ -10,6 +10,8 @@ void main() {
   // 保障flutter相关信息初始化完成
   WidgetsFlutterBinding.ensureInitialized();
   NativeChannel.instance.setUpChannel();
+  
+
   runApp(MultiProvider(providers: providers, child: const MyApp()));
 }
 

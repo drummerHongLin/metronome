@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart'
-    show SafeArea, Curves, CurveTween, FadeTransition;
+    show CurveTween, Curves, FadeTransition, SafeArea, Theme;
+import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter_metronome/service/shared_preference/shared_preference.dart';
 import 'package:flutter_metronome/ui/main_screen.dart';
 import 'package:flutter_metronome/ui/main_screen_view_model.dart';
@@ -17,20 +18,23 @@ GoRouter router(SharedPreferencesService sps) => GoRouter(
     ),
     GoRoute(
       path: '/',
-      pageBuilder:
-          (context, state) => CustomTransitionPage(
-            transitionDuration: Duration(seconds: 1),
-            reverseTransitionDuration: Duration(seconds: 1),
-            child: SafeArea(child: MainScreen(viewModel: context.read<MainScreenViewModel>(),)),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) =>
-                    FadeTransition(
-                      opacity: CurveTween(
-                        curve: Curves.easeInOutCirc,
-                      ).animate(animation),
-                      child: child,
-                    ),
+      pageBuilder: (context, state) => CustomTransitionPage(
+        transitionDuration: Duration(seconds: 1),
+        reverseTransitionDuration: Duration(seconds: 1),
+        child: Container(
+          color: Theme.of(context).colorScheme.surface,
+          child: SafeArea(
+            child: MainScreen(viewModel: context.read<MainScreenViewModel>()),
           ),
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+              opacity: CurveTween(
+                curve: Curves.easeInOutCirc,
+              ).animate(animation),
+              child: child,
+            ),
+      ),
     ),
   ],
   redirect: (context, state) async {

@@ -162,6 +162,7 @@ class _ConfigTile extends StatelessWidget {
                         configInfo.referenceBeat.path,
                         height: 14,
                         fit: BoxFit.scaleDown,
+                         color: Theme.of(context).colorScheme.onSurface
                       ),
                     ],
                   ),
@@ -172,13 +173,13 @@ class _ConfigTile extends StatelessWidget {
               CustomeElevatedButton(
                 onTap: onCheck,
                 color: Theme.of(context).colorScheme.primaryContainer,
-                child: Icon(Icons.check, size: 20),
+                child: Icon(Icons.check, size: 20 , color: Theme.of(context).colorScheme.onSurface,),
               ),
               SizedBox(width: 5),
               CustomeElevatedButton(
                 onTap: onDelete,
                 color: Theme.of(context).colorScheme.primaryContainer,
-                child: Icon(Icons.delete, size: 20),
+                child: Icon(Icons.delete, size: 20 , color: Theme.of(context).colorScheme.onSurface),
               ),
             ],
           ),

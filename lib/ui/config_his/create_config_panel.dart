@@ -88,6 +88,7 @@ class _CreateConfigPanelState extends State<CreateConfigPanel> {
                             widget.configInfo.referenceBeat.path,
                             height: 14,
                             fit: BoxFit.scaleDown,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ],
                       ),
@@ -104,6 +105,7 @@ class _CreateConfigPanelState extends State<CreateConfigPanel> {
                               height: 25,
                               width: 25,
                               fit: BoxFit.scaleDown,
+                              color: Theme.of(context).colorScheme.onSurface,
                             );
                           },
                         ),

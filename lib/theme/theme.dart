@@ -32,7 +32,7 @@ class MaterialTheme {
       brightness: Brightness.light,
       primary: Colors.white,
       primaryContainer: Colors.black,
-      onPrimary: Colors.white,
+      onPrimary: Colors.black,
       secondary: Colors.white,
       onSecondary: Colors.black,
       error: Colors.red,

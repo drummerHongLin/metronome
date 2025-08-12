@@ -26,7 +26,7 @@ class PlayerConfigRepo {
       await _playerConfigService.createPlayerConfig(pd);
       return Success(null);
     } on Exception catch (e) {
-      return Failure("创建节拍失败!", e);
+      return Failure("创建节拍失败! ${e.toString()}", e);
     }
   }
 
