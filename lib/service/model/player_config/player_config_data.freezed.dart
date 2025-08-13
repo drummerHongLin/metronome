@@ -298,4 +298,276 @@ as String,
 
 }
 
+
+/// @nodoc
+mixin _$GetPlayerConfigsResponse {
+
+ bool get hasMore; List<PlayerConfig> get playerConfigs;
+/// Create a copy of GetPlayerConfigsResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$GetPlayerConfigsResponseCopyWith<GetPlayerConfigsResponse> get copyWith => _$GetPlayerConfigsResponseCopyWithImpl<GetPlayerConfigsResponse>(this as GetPlayerConfigsResponse, _$identity);
+
+  /// Serializes this GetPlayerConfigsResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetPlayerConfigsResponse&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&const DeepCollectionEquality().equals(other.playerConfigs, playerConfigs));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,hasMore,const DeepCollectionEquality().hash(playerConfigs));
+
+@override
+String toString() {
+  return 'GetPlayerConfigsResponse(hasMore: $hasMore, playerConfigs: $playerConfigs)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $GetPlayerConfigsResponseCopyWith<$Res>  {
+  factory $GetPlayerConfigsResponseCopyWith(GetPlayerConfigsResponse value, $Res Function(GetPlayerConfigsResponse) _then) = _$GetPlayerConfigsResponseCopyWithImpl;
+@useResult
+$Res call({
+ bool hasMore, List<PlayerConfig> playerConfigs
+});
+
+
+
+
+}
+/// @nodoc
+class _$GetPlayerConfigsResponseCopyWithImpl<$Res>
+    implements $GetPlayerConfigsResponseCopyWith<$Res> {
+  _$GetPlayerConfigsResponseCopyWithImpl(this._self, this._then);
+
+  final GetPlayerConfigsResponse _self;
+  final $Res Function(GetPlayerConfigsResponse) _then;
+
+/// Create a copy of GetPlayerConfigsResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? hasMore = null,Object? playerConfigs = null,}) {
+  return _then(_self.copyWith(
+hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
+as bool,playerConfigs: null == playerConfigs ? _self.playerConfigs : playerConfigs // ignore: cast_nullable_to_non_nullable
+as List<PlayerConfig>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [GetPlayerConfigsResponse].
+extension GetPlayerConfigsResponsePatterns on GetPlayerConfigsResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _GetPlayerConfigsResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _GetPlayerConfigsResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _GetPlayerConfigsResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _GetPlayerConfigsResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _GetPlayerConfigsResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _GetPlayerConfigsResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool hasMore,  List<PlayerConfig> playerConfigs)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _GetPlayerConfigsResponse() when $default != null:
+return $default(_that.hasMore,_that.playerConfigs);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool hasMore,  List<PlayerConfig> playerConfigs)  $default,) {final _that = this;
+switch (_that) {
+case _GetPlayerConfigsResponse():
+return $default(_that.hasMore,_that.playerConfigs);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool hasMore,  List<PlayerConfig> playerConfigs)?  $default,) {final _that = this;
+switch (_that) {
+case _GetPlayerConfigsResponse() when $default != null:
+return $default(_that.hasMore,_that.playerConfigs);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _GetPlayerConfigsResponse implements GetPlayerConfigsResponse {
+  const _GetPlayerConfigsResponse({required this.hasMore, required final  List<PlayerConfig> playerConfigs}): _playerConfigs = playerConfigs;
+  factory _GetPlayerConfigsResponse.fromJson(Map<String, dynamic> json) => _$GetPlayerConfigsResponseFromJson(json);
+
+@override final  bool hasMore;
+ final  List<PlayerConfig> _playerConfigs;
+@override List<PlayerConfig> get playerConfigs {
+  if (_playerConfigs is EqualUnmodifiableListView) return _playerConfigs;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_playerConfigs);
+}
+
+
+/// Create a copy of GetPlayerConfigsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$GetPlayerConfigsResponseCopyWith<_GetPlayerConfigsResponse> get copyWith => __$GetPlayerConfigsResponseCopyWithImpl<_GetPlayerConfigsResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$GetPlayerConfigsResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetPlayerConfigsResponse&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&const DeepCollectionEquality().equals(other._playerConfigs, _playerConfigs));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,hasMore,const DeepCollectionEquality().hash(_playerConfigs));
+
+@override
+String toString() {
+  return 'GetPlayerConfigsResponse(hasMore: $hasMore, playerConfigs: $playerConfigs)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$GetPlayerConfigsResponseCopyWith<$Res> implements $GetPlayerConfigsResponseCopyWith<$Res> {
+  factory _$GetPlayerConfigsResponseCopyWith(_GetPlayerConfigsResponse value, $Res Function(_GetPlayerConfigsResponse) _then) = __$GetPlayerConfigsResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ bool hasMore, List<PlayerConfig> playerConfigs
+});
+
+
+
+
+}
+/// @nodoc
+class __$GetPlayerConfigsResponseCopyWithImpl<$Res>
+    implements _$GetPlayerConfigsResponseCopyWith<$Res> {
+  __$GetPlayerConfigsResponseCopyWithImpl(this._self, this._then);
+
+  final _GetPlayerConfigsResponse _self;
+  final $Res Function(_GetPlayerConfigsResponse) _then;
+
+/// Create a copy of GetPlayerConfigsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? hasMore = null,Object? playerConfigs = null,}) {
+  return _then(_GetPlayerConfigsResponse(
+hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
+as bool,playerConfigs: null == playerConfigs ? _self._playerConfigs : playerConfigs // ignore: cast_nullable_to_non_nullable
+as List<PlayerConfig>,
+  ));
+}
+
+
+}
+
 // dart format on

@@ -33,7 +33,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       elevation: 2,
-      child: ListView(
+      child: Column(
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
@@ -44,17 +44,27 @@ class _CustomDrawerState extends State<CustomDrawer> {
               imgSize: Size(100, 100),
             ),
           ),
-          for (var t in _tiles)
-            ListTile(
-              title: Text(t.$2),
-              selected: _selectedIndex == t.$1,
-              onTap: () async {
-                _setSelectedIndex(t.$1);
-                // Update the state of the app
-                await Navigator.push(context, _buildInfoRoute(t.$1));
-                // Then close the drawer
+          Expanded(
+            child: ListView.builder(
+              itemCount: _tiles.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(_tiles[index].$2),
+                  selected: _selectedIndex == _tiles[index].$1,
+                  onTap: () async {
+                    _setSelectedIndex(_tiles[index].$1);
+                    // Update the state of the app
+                    await Navigator.push(
+                      context,
+                      _buildInfoRoute(_tiles[index].$1),
+                    );
+                    // Then close the drawer
+                  },
+                );
               },
             ),
+          ),
+          Container()
         ],
       ),
     );

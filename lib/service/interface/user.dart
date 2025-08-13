@@ -5,17 +5,13 @@ abstract class UserService {
   set token(String? token);
   Future<LoginResponse> login(LoginRequest loginRequest);
   Future<void> register(RegisterRequest request);
-  Future<GetUserResponse> getUser(String token);
+  Future<GetUserResponse> getUser();
   Future<bool> verifyUser(String username);
-  Future<void> changePassword(
-    ChangePasswordRequest request,
-    String username,
-    String token,
-  );
+  Future<void> changePassword(ChangePasswordRequest request, String username);
   Future<void> sendEmail(String username);
   Future<EmailVerifiedResponse> verifyEmail(
     String username,
     EmailVerifingRequest request,
   );
-  Future<void> setAvatar(String username, String token, XFile file) ;
+  Future<void> setAvatar(String username, XFile file);
 }

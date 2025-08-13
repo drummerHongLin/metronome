@@ -31,3 +31,19 @@ Map<String, dynamic> _$PlayerConfigToJson(_PlayerConfig instance) =>
       'subBeats': instance.subBeats,
       'configTitle': instance.configTitle,
     };
+
+_GetPlayerConfigsResponse _$GetPlayerConfigsResponseFromJson(
+  Map<String, dynamic> json,
+) => _GetPlayerConfigsResponse(
+  hasMore: json['hasMore'] as bool,
+  playerConfigs: (json['playerConfigs'] as List<dynamic>)
+      .map((e) => PlayerConfig.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
+
+Map<String, dynamic> _$GetPlayerConfigsResponseToJson(
+  _GetPlayerConfigsResponse instance,
+) => <String, dynamic>{
+  'hasMore': instance.hasMore,
+  'playerConfigs': instance.playerConfigs,
+};

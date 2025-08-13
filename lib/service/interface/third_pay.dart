@@ -1,7 +1,6 @@
 import 'package:flutter_metronome/service/model/third_pay/third_pay_data.dart';
 
 abstract class ThirdPayService {
-
-   Future<TransactionInfo> invokePurchase(int quantity,String token);
-
+  Future<TransactionInfo> invokePurchase(int quantity, String token);
+  void setUpChannel(Future<bool> Function(dynamic arguments) updateHandler);
 }

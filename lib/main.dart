@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/route/router.dart';
 import 'package:flutter_metronome/dependency/provider.dart';
-import 'package:flutter_metronome/service/native_channel/native_channel.dart';
 import 'package:flutter_metronome/theme/theme.dart';
 import 'package:flutter_metronome/theme/util.dart';
 import 'package:provider/provider.dart';
@@ -9,10 +8,9 @@ import 'package:provider/provider.dart';
 void main() {
   // 保障flutter相关信息初始化完成
   WidgetsFlutterBinding.ensureInitialized();
-  NativeChannel.instance.setUpChannel();
-  
 
   runApp(MultiProvider(providers: providers, child: const MyApp()));
+  
 }
 
 class MyApp extends StatelessWidget {

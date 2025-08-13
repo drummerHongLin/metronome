@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_metronome/repo/model/user.dart';
 import 'package:flutter_metronome/service/interface/user.dart';
 import 'package:flutter_metronome/service/model/user/user_data.dart';
-import 'package:flutter_metronome/service/shared_preference/model/token_data.dart';
-import 'package:flutter_metronome/service/shared_preference/shared_preference.dart';
+import 'package:flutter_metronome/service/model/token/token_data.dart';
+import 'package:flutter_metronome/service/services/shared_preference/shared_preference.dart';
+import 'package:flutter_metronome/utils/tools.dart';
 import 'package:flutter_metronome/utils/result.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AuthRepo extends ChangeNotifier{
+class AuthRepo extends ChangeNotifier {
   final SharedPreferencesService _preferencesService;
   final UserService _userClient;
 
@@ -20,13 +21,36 @@ class AuthRepo extends ChangeNotifier{
 
   TokenInfo? _token;
 
-  Future<bool> get isLoggedIn async {
-    if(_token != null) return true;
-    _token = await _preferencesService.fetchLoginToken();
-    if(_token != null) return true;
+  bool get isLoggedIn {
+    if (_token != null) return true;
+    fetchLocalToken();
     return false;
   }
 
+  set token(TokenInfo? v) {
+    _token = v;
+    notifyListeners();
+  }
+
+  Future<Result<void>> fetchLocalToken() async {
+    try {
+      final rst = await _preferencesService.fetchLoginToken();
+      if (rst != null &&
+          rst.expiredAt > DateTime.now().millisecondsSinceEpoch ~/ 1000) {
+        _userClient.token = rst.value;
+        token = rst;
+        await dataTransmit();
+      } else {
+        token = null;
+        _userClient.token = null;
+        _preferencesService.saveLoginToken(null);
+      }
+    } on Exception {
+      return Failure("获取登录状态失败!");
+    }
+
+    return Success(null);
+  }
 
   Future<Result<void>> changePassword(
     String newPassword,
@@ -34,6 +58,7 @@ class AuthRepo extends ChangeNotifier{
     String code,
   ) async {
     try {
+      if (!isLoggedIn) return Failure("未登录");
       final rst = await _userClient.verifyEmail(
         username,
         EmailVerifingRequest(code: code),
@@ -41,11 +66,9 @@ class AuthRepo extends ChangeNotifier{
       await _userClient.changePassword(
         ChangePasswordRequest(newPassword: newPassword),
         username,
-        rst.token,
       );
       _token = TokenInfo(value: rst.token, expiredAt: rst.expiredAt);
       _preferencesService.saveLoginToken(_token);
-
       return Success(null);
     } on DioException catch (e) {
       if (e.response?.data != null) {
@@ -58,16 +81,16 @@ class AuthRepo extends ChangeNotifier{
     }
   }
 
-  
   Future<Result<void>> login(String username, String password) async {
     try {
       final rst1 = await _userClient.login(
         LoginRequest(username: username, password: password),
       );
-      _token = TokenInfo(value: rst1.token, expiredAt: rst1.expiredAt);
+      token = TokenInfo(value: rst1.token, expiredAt: rst1.expiredAt);
       _preferencesService.saveLoginToken(_token);
-      _userClient.token =rst1.token;
-     
+      _userClient.token = rst1.token;
+      // 登录成功后启动数据转移
+      await dataTransmit();
       return Success(null);
     } on DioException catch (e) {
       if (e.response?.data != null) {
@@ -80,14 +103,13 @@ class AuthRepo extends ChangeNotifier{
     }
   }
 
-  
   Future<Result<void>> register(String username, String code) async {
     try {
       final rst1 = await _userClient.verifyEmail(
         username,
         EmailVerifingRequest(code: code),
       );
-      _token = TokenInfo(value: rst1.token, expiredAt: rst1.expiredAt);
+      token = TokenInfo(value: rst1.token, expiredAt: rst1.expiredAt);
       _preferencesService.saveLoginToken(_token);
       return Success(null);
     } on DioException catch (e) {
@@ -101,7 +123,6 @@ class AuthRepo extends ChangeNotifier{
     }
   }
 
-  
   Future<Result<void>> sendVerificationEmail(
     String username,
     String password,
@@ -128,14 +149,11 @@ class AuthRepo extends ChangeNotifier{
     }
   }
 
-
-
-  
   Future<Result<UserInfo>> getUserInfo() async {
     try {
-      if(! await isLoggedIn) return Failure("未登录");
+      if (!isLoggedIn) return Failure("未登录");
       // 如果是已登录状态，那么token一定是有的
-      final rst = await _userClient.getUser(_token!.value);
+      final rst = await _userClient.getUser();
       final u = UserInfo(
         username: rst.username,
         password: rst.password,
@@ -157,10 +175,9 @@ class AuthRepo extends ChangeNotifier{
     }
   }
 
-  
   Result<void> logout() {
     try {
-      _token = null;
+      token = null;
       _preferencesService.saveLoginToken(null);
       _userClient.token = null;
       return Success(null);
@@ -169,7 +186,6 @@ class AuthRepo extends ChangeNotifier{
     }
   }
 
-  
   Future<Result<void>> sendChangePasswordEmail(String username) async {
     try {
       // 先确定用户是否已经验证过了
@@ -188,13 +204,11 @@ class AuthRepo extends ChangeNotifier{
     }
   }
 
-  
   Future<Result<void>> setAvatar(String username, XFile file) async {
     try {
-      
-      if(! await isLoggedIn) return Failure("未登录");
+      if (!isLoggedIn) return Failure("未登录");
 
-      await _userClient.setAvatar(username, _token!.value, file);
+      await _userClient.setAvatar(username, file);
       return Success(null);
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
@@ -208,17 +222,15 @@ class AuthRepo extends ChangeNotifier{
     }
   }
 
-  
   Future<Result<void>> changePasswordOnLogin(
     String newPassword,
     String username,
   ) async {
     try {
-      if(! await isLoggedIn) return Failure("未登录");
+      if (!isLoggedIn) return Failure("未登录");
       await _userClient.changePassword(
         ChangePasswordRequest(newPassword: newPassword),
         username,
-        _token!.value,
       );
 
       return Success(null);
@@ -232,6 +244,4 @@ class AuthRepo extends ChangeNotifier{
       return Failure("修改密码失败!", e);
     }
   }
-
-  
 }

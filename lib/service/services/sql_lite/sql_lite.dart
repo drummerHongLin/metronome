@@ -1,23 +1,16 @@
-import 'package:flutter/material.dart' show WidgetsFlutterBinding;
 import 'package:flutter_metronome/service/interface/pay.dart';
 import 'package:flutter_metronome/service/interface/player_config.dart';
 import 'package:flutter_metronome/service/model/pay/pay_data.dart';
 import 'package:flutter_metronome/service/model/player_config/player_config_data.dart';
-import 'package:sqflite/sqflite.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
-class SqliteDb {
-  // 创建单例对象
-  static final SqliteDb _instance = SqliteDb._internal();
-
-  static SqliteDb get instance => _instance;
-
-  SqliteDb._internal();
+mixin _SqliteDb {
   // 获取数据库对象
   static Database? _database;
   Future<Database> get database async {
     if (_database != null) return _database!;
-
     _database = await _initDatabase();
     return _database!;
   }
@@ -25,9 +18,6 @@ class SqliteDb {
   Future<Database> _initDatabase() async {
     // 默认数据库路径
     String path = join(await getDatabasesPath(), 'jinghong.db');
-    // 保证应用已经挂靠
-    WidgetsFlutterBinding.ensureInitialized();
-
     return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
@@ -40,6 +30,7 @@ class SqliteDb {
         createTime TEXT NOT NULL,
         productName TEXT NOT NULL,
         quantity INTEGER NOT NULL,
+        price  REAL NOT NULL,
         amount REAL NOT NULL,
         payStatus INTEGER,
         transactionId TEXT,
@@ -63,12 +54,12 @@ class SqliteDb {
   }
 }
 
-class PayDbClient extends PayService {
+class PayDbClient extends PayService with _SqliteDb {
   @override
   Future<GetPaymentListResponse> getPaymentList(
     GetPaymentListRequest request,
   ) async {
-    final db = await SqliteDb.instance.database;
+    final db = await database;
     final rst = await db.query(
       'payment_record',
       where: "accountToken = ? ",
@@ -87,7 +78,7 @@ class PayDbClient extends PayService {
   Future<CreatePaymentRecordResponse> createPayment(
     CreatePaymentRecordRequest request,
   ) async {
-    final db = await SqliteDb.instance.database;
+    final db = await database;
     // 需要本地生成paymentNo
     final paymentNo = "FK${DateTime.now().millisecondsSinceEpoch}";
     // 将请求转化成json
@@ -99,7 +90,7 @@ class PayDbClient extends PayService {
 
   @override
   Future<void> updatePayment(UpdatePaymentRecordRequest request) async {
-    final db = await SqliteDb.instance.database;
+    final db = await database;
     // 需要本地生成paymentNo
     final paymentNo = "FK${DateTime.now().millisecondsSinceEpoch}";
     // 将请求转化成json
@@ -113,19 +104,31 @@ class PayDbClient extends PayService {
     );
     return;
   }
+
+  Future<List<PaymentRecord>> getAllPaymentList() async {
+    final db = await database;
+    final rst = await db.query('payment_record');
+    final paymentList = rst.map((e) => PaymentRecord.fromJson(e)).toList();
+    return paymentList;
+  }
+
+  Future<void> truncatePaymentRecord() async {
+    final db = await database;
+    return db.execute('truncate table payment_record');
+  }
 }
 
-class PlayerConfigDbClient extends PlayerConfigService {
+class PlayerConfigDbClient extends PlayerConfigService with _SqliteDb {
   @override
   Future<void> createPlayerConfig(PlayerConfig p) async {
-    final db = await SqliteDb.instance.database;
+    final db = await database;
     await db.insert('player_config', p.toJson());
     return;
   }
 
   @override
   Future<void> deletePlayerConfig(String pNo) async {
-    final db = await SqliteDb.instance.database;
+    final db = await database;
     await db.delete(
       'player_config',
       where: "playerConfigNo = ?",
@@ -135,18 +138,31 @@ class PlayerConfigDbClient extends PlayerConfigService {
   }
 
   @override
-  Future<List<PlayerConfig>> getPlayerConfigs(int offset, int limit) async {
-    final db = await SqliteDb.instance.database;
-    final rst = await db.query('player_config', limit: limit, offset: offset,orderBy: "createTime");
+  Future<GetPlayerConfigsResponse> getPlayerConfigs(
+    int offset,
+    int limit,
+  ) async {
+    final db = await database;
+    final rst = await db.query(
+      'player_config',
+      limit: limit,
+      offset: offset,
+      orderBy: "createTime",
+    );
 
     final playerConfigList = rst.map((e) => PlayerConfig.fromJson(e)).toList();
 
-    return playerConfigList;
+    final hasMore = playerConfigList.length == limit;
+
+    return GetPlayerConfigsResponse(
+      hasMore: hasMore,
+      playerConfigs: playerConfigList,
+    );
   }
 
   @override
   Future<void> updatePlayerConfig(PlayerConfig p) async {
-    final db = await SqliteDb.instance.database;
+    final db = await database;
     await db.update(
       'player_config',
       p.toJson(),
@@ -154,5 +170,17 @@ class PlayerConfigDbClient extends PlayerConfigService {
       whereArgs: [p.playerConfigNo],
     );
     return;
+  }
+
+  Future<List<PlayerConfig>> getAllPlayerConfigs() async {
+    final db = await database;
+    final rst = await db.query('player_config', orderBy: "createTime");
+    final playerConfigList = rst.map((e) => PlayerConfig.fromJson(e)).toList();
+    return playerConfigList;
+  }
+
+  Future<void> truncatePlayerConfigs() async {
+    final db = await database;
+    return db.execute('truncate table player_config');
   }
 }

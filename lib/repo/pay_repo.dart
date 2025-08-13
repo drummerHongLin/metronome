@@ -3,8 +3,7 @@ import 'package:flutter_metronome/configs/data_type.dart';
 import 'package:flutter_metronome/service/interface/pay.dart';
 import 'package:flutter_metronome/service/interface/third_pay.dart';
 import 'package:flutter_metronome/service/model/pay/pay_data.dart';
-
-import 'package:flutter_metronome/service/shared_preference/shared_preference.dart';
+import 'package:flutter_metronome/service/services/shared_preference/shared_preference.dart';
 import 'package:flutter_metronome/utils/result.dart';
 import 'package:intl/intl.dart';
 
@@ -26,12 +25,13 @@ class PayRepo {
     final CreatePaymentRecordResponse payRes;
     try {
       // 1. 创建购买单据
-       payRes = await _payService.createPayment(
+      payRes = await _payService.createPayment(
         CreatePaymentRecordRequest(
           accountToken: token,
           createTime: DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now()),
           productName: product.name,
           quantity: quantity,
+          price: product.price.toDouble(),
           amount: (quantity * product.price).toDouble(),
         ),
       );
@@ -40,7 +40,6 @@ class PayRepo {
     }
 
     // 2.调用支付接口
-
     try {
       final thirdPayRes = await _thirdPayService.invokePurchase(
         quantity,

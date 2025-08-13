@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_metronome/service/shared_preference/shared_preference.dart';
+import 'package:flutter_metronome/repo/agreement_repo.dart';
 import 'package:flutter_metronome/ui/policy/widgts/external_web_view_screen.dart';
 
 class InteractionCard extends StatelessWidget {
   const InteractionCard({super.key, required this.sps});
-  final SharedPreferencesService sps;
+  final AgreementRepo sps;
 
   @override
   Widget build(BuildContext context) {

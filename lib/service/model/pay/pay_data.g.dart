@@ -14,6 +14,7 @@ _CreatePaymentRecordRequest _$CreatePaymentRecordRequestFromJson(
   productName: json['productName'] as String,
   quantity: (json['quantity'] as num).toInt(),
   amount: (json['amount'] as num).toDouble(),
+  price: (json['price'] as num).toDouble(),
 );
 
 Map<String, dynamic> _$CreatePaymentRecordRequestToJson(
@@ -24,6 +25,7 @@ Map<String, dynamic> _$CreatePaymentRecordRequestToJson(
   'productName': instance.productName,
   'quantity': instance.quantity,
   'amount': instance.amount,
+  'price': instance.price,
 };
 
 _CreatePaymentRecordResponse _$CreatePaymentRecordResponseFromJson(
@@ -57,19 +59,29 @@ Map<String, dynamic> _$UpdatePaymentRecordRequestToJson(
 _PaymentRecord _$PaymentRecordFromJson(Map<String, dynamic> json) =>
     _PaymentRecord(
       paymentNo: json['paymentNo'] as String,
+      accountToken: json['accountToken'] as String,
       createTime: json['createTime'] as String,
       payTime: json['payTime'] as String,
+      productName: json['productName'] as String,
       payStatus: (json['payStatus'] as num).toInt(),
       quantity: (json['quantity'] as num).toInt(),
+      amount: (json['amount'] as num).toDouble(),
+      price: (json['price'] as num).toDouble(),
+      transactionId: json['transactionId'] as String,
     );
 
 Map<String, dynamic> _$PaymentRecordToJson(_PaymentRecord instance) =>
     <String, dynamic>{
       'paymentNo': instance.paymentNo,
+      'accountToken': instance.accountToken,
       'createTime': instance.createTime,
       'payTime': instance.payTime,
+      'productName': instance.productName,
       'payStatus': instance.payStatus,
       'quantity': instance.quantity,
+      'amount': instance.amount,
+      'price': instance.price,
+      'transactionId': instance.transactionId,
     };
 
 _GetPaymentListRequest _$GetPaymentListRequestFromJson(

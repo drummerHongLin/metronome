@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart'
-    show CurveTween, Curves, FadeTransition, SafeArea, Theme;
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter_metronome/service/shared_preference/shared_preference.dart';
+    show CurveTween, Curves, FadeTransition, SafeArea, Theme, Container;
+import 'package:flutter_metronome/repo/agreement_repo.dart';
+
 import 'package:flutter_metronome/ui/main_screen.dart';
 import 'package:flutter_metronome/ui/main_screen_view_model.dart';
 import 'package:flutter_metronome/ui/policy/interaction_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-GoRouter router(SharedPreferencesService sps) => GoRouter(
+GoRouter router(AgreementRepo sps) => GoRouter(
   initialLocation: '/user-agreement',
   refreshListenable: sps,
   routes: [

@@ -9,6 +9,8 @@ class PlayerConfigRepo {
   PlayerConfigRepo({required PlayerConfigService playerConfigService})
     : _playerConfigService = playerConfigService;
 
+  bool hasMore = true;
+
   Future<Result<void>> createNewPlayerConfig(PlayerConfigInfo p) async {
     try {
       final s = p.subBeats.map((e) => e.index).toList().toString();
@@ -21,7 +23,7 @@ class PlayerConfigRepo {
         beatNote: p.beatNote,
         referenceBeat: p.referenceBeat.index,
         subBeats: s,
-        configTitle: p.configTitle
+        configTitle: p.configTitle,
       );
       await _playerConfigService.createPlayerConfig(pd);
       return Success(null);
@@ -42,7 +44,7 @@ class PlayerConfigRepo {
         beatNote: p.beatNote,
         referenceBeat: p.referenceBeat.index,
         subBeats: s,
-        configTitle: p.configTitle
+        configTitle: p.configTitle,
       );
       await _playerConfigService.updatePlayerConfig(pd);
       return Success(null);
@@ -64,9 +66,13 @@ class PlayerConfigRepo {
     int offset,
     int limit,
   ) async {
+    if (!hasMore) return Failure("暂无更多记录");
     try {
       final rst = await _playerConfigService.getPlayerConfigs(offset, limit);
-      final pList = rst.map((p) => PlayerConfigInfo.fromData(p)).toList();
+      hasMore = rst.hasMore;
+      final pList = rst.playerConfigs
+          .map((p) => PlayerConfigInfo.fromData(p))
+          .toList();
       return Success(pList);
     } on Exception catch (e) {
       return Failure("获取历史节拍记录失败!", e);

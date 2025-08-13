@@ -1,10 +1,7 @@
-
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'pay_data.g.dart';
 part 'pay_data.freezed.dart';
-
 
 @freezed
 abstract class CreatePaymentRecordRequest with _$CreatePaymentRecordRequest {
@@ -13,25 +10,22 @@ abstract class CreatePaymentRecordRequest with _$CreatePaymentRecordRequest {
     required String createTime,
     required String productName,
     required int quantity,
-    required double amount
+    required double amount,
+    required double price,
   }) = _CreatePaymentRecordRequest;
 
-  factory CreatePaymentRecordRequest.fromJson(Map<String,dynamic> json) => _$CreatePaymentRecordRequestFromJson(json);
-
+  factory CreatePaymentRecordRequest.fromJson(Map<String, dynamic> json) =>
+      _$CreatePaymentRecordRequestFromJson(json);
 }
-
-
 
 @freezed
 abstract class CreatePaymentRecordResponse with _$CreatePaymentRecordResponse {
-  const factory CreatePaymentRecordResponse({
-    required String paymentNo,
-  }) = _CreatePaymentRecordResponse;
+  const factory CreatePaymentRecordResponse({required String paymentNo}) =
+      _CreatePaymentRecordResponse;
 
-  factory CreatePaymentRecordResponse.fromJson(Map<String,dynamic> json) => _$CreatePaymentRecordResponseFromJson(json);
-
+  factory CreatePaymentRecordResponse.fromJson(Map<String, dynamic> json) =>
+      _$CreatePaymentRecordResponseFromJson(json);
 }
-
 
 @freezed
 abstract class UpdatePaymentRecordRequest with _$UpdatePaymentRecordRequest {
@@ -41,52 +35,50 @@ abstract class UpdatePaymentRecordRequest with _$UpdatePaymentRecordRequest {
     required String payTime,
     required String transactionId,
     required int payStatus,
-
   }) = _UpdatePaymentRecordRequest;
 
-  factory UpdatePaymentRecordRequest.fromJson(Map<String,dynamic> json) => _$UpdatePaymentRecordRequestFromJson(json);
-
+  factory UpdatePaymentRecordRequest.fromJson(Map<String, dynamic> json) =>
+      _$UpdatePaymentRecordRequestFromJson(json);
 }
-
-
-
 
 @freezed
 abstract class PaymentRecord with _$PaymentRecord {
   const factory PaymentRecord({
     required String paymentNo,
+    required String accountToken,
     required String createTime,
     required String payTime,
+    required String productName,
     required int payStatus,
-    required int quantity
+    required int quantity,
+    required double amount,
+    required double price,
+    required String transactionId,
   }) = _PaymentRecord;
 
-  factory PaymentRecord.fromJson(Map<String,dynamic> json) => _$PaymentRecordFromJson(json);
-
+  factory PaymentRecord.fromJson(Map<String, dynamic> json) =>
+      _$PaymentRecordFromJson(json);
 }
-
 
 @freezed
 abstract class GetPaymentListRequest with _$GetPaymentListRequest {
   const factory GetPaymentListRequest({
     required int start,
     required int end,
-    required String accountToken
+    required String accountToken,
   }) = _GetPaymentListRequest;
 
-  factory GetPaymentListRequest.fromJson(Map<String,dynamic> json) => _$GetPaymentListRequestFromJson(json);
-
+  factory GetPaymentListRequest.fromJson(Map<String, dynamic> json) =>
+      _$GetPaymentListRequestFromJson(json);
 }
-
-
 
 @freezed
 abstract class GetPaymentListResponse with _$GetPaymentListResponse {
   const factory GetPaymentListResponse({
     required String accountToken,
-    required List<PaymentRecord> paymentRecords
+    required List<PaymentRecord> paymentRecords,
   }) = _GetPaymentListResponse;
 
-  factory GetPaymentListResponse.fromJson(Map<String,dynamic> json) => _$GetPaymentListResponseFromJson(json);
-
+  factory GetPaymentListResponse.fromJson(Map<String, dynamic> json) =>
+      _$GetPaymentListResponseFromJson(json);
 }

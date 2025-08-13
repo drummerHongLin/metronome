@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_metronome/configs/data_type.dart';
 import 'package:flutter_metronome/repo/model/player_config.dart';
 import 'package:flutter_metronome/repo/player_config_repo.dart';
-import 'package:flutter_metronome/service/audio/sound.dart';
+import 'package:flutter_metronome/service/services/audio/sound.dart';
 import 'package:flutter_metronome/utils/command.dart';
 import 'package:flutter_metronome/utils/result.dart';
 import 'package:intl/intl.dart';

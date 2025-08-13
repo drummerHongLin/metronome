@@ -1,15 +1,19 @@
 import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter_metronome/service/interface/pay.dart';
+import 'package:flutter_metronome/service/interface/player_config.dart';
 import 'package:flutter_metronome/service/interface/user.dart';
 import 'package:flutter_metronome/service/model/pay/pay_data.dart';
+import 'package:flutter_metronome/service/model/player_config/player_config_data.dart';
 import 'package:flutter_metronome/service/model/user/user_data.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:dio/dio.dart';
 
 mixin _DioClient {
   static final Dio client = Dio(
     BaseOptions(baseUrl: "https://www.honghouse.com/api/"),
   );
+
   void setToken(String? token) {
     if (token == null) {
       client.options.headers.remove('Authorization');
@@ -30,8 +34,7 @@ mixin _DioClient {
 class UserApiClient extends UserService with _DioClient {
   late final Dio _client;
 
-  UserApiClient({String? baseUrl}) {
-    if (baseUrl != null) setUrl(baseUrl);
+  UserApiClient() {
     _client = getClient();
   }
 
@@ -57,11 +60,8 @@ class UserApiClient extends UserService with _DioClient {
   }
 
   @override
-  Future<GetUserResponse> getUser(String token) async {
-    final res = await _client.get(
-      "/v1/users/current-user",
-      options: Options(headers: {'Authorization': 'Bearer $token'}),
-    );
+  Future<GetUserResponse> getUser() async {
+    final res = await _client.get("/v1/users/current-user");
     return GetUserResponse.fromJson(res.data);
   }
 
@@ -78,12 +78,10 @@ class UserApiClient extends UserService with _DioClient {
   Future<void> changePassword(
     ChangePasswordRequest request,
     String username,
-    String token,
   ) async {
     await _client.put(
       "/v1/users/$username/change-password",
       data: jsonEncode(request),
-      options: Options(headers: {'Authorization': 'Bearer $token'}),
     );
   }
 
@@ -105,25 +103,20 @@ class UserApiClient extends UserService with _DioClient {
   }
 
   @override
-  Future<void> setAvatar(String username, String token, XFile file) async {
+  Future<void> setAvatar(String username, XFile file) async {
     final f = await file.readAsBytes();
     final formData = FormData.fromMap({
       'file': MultipartFile.fromBytes(f, filename: file.name),
     });
 
-    await _client.post(
-      "/v1/users/$username/set-avatar",
-      data: formData,
-      options: Options(headers: {'Authorization': 'Bearer $token'}),
-    );
+    await _client.post("/v1/users/$username/set-avatar", data: formData);
   }
 }
 
 class PayApiClient extends PayService with _DioClient {
   late final Dio _client;
 
-  PayApiClient({String? baseUrl}) {
-    if (baseUrl != null) setUrl(baseUrl);
+  PayApiClient() {
     _client = getClient();
   }
 
@@ -133,17 +126,19 @@ class PayApiClient extends PayService with _DioClient {
   Future<CreatePaymentRecordResponse> createPayment(
     CreatePaymentRecordRequest request,
   ) async {
-    final rst = await _client.post(
-      'v1/payment/create-payment',
-      data: jsonEncode(request),
-    );
+        // 需要本地生成paymentNo
+    final paymentNo = "FK${DateTime.now().millisecondsSinceEpoch}";
+    // 将请求转化成json
+    final paymentInfoJson = request.toJson();
+    paymentInfoJson['paymentNo'] = paymentNo;
+    final rst = await _client.post('v1/payment', data: paymentInfoJson);
     return CreatePaymentRecordResponse.fromJson(rst.data);
   }
 
   @override
   Future<void> updatePayment(UpdatePaymentRecordRequest request) async {
     // 如果状态码不是200， 那么Dio会报错，错误处理放在repo中
-    await _client.post('v1/payment/create-payment', data: jsonEncode(request));
+    await _client.put('v1/payment', data: jsonEncode(request));
   }
 
   @override
@@ -151,10 +146,53 @@ class PayApiClient extends PayService with _DioClient {
     GetPaymentListRequest request,
   ) async {
     final rst = await _client.post(
-      'v1/payment/get-payment',
-      data: jsonEncode(request),
+      'v1/payment/get-payments/${request.start}/${request.end}',
     );
-
     return GetPaymentListResponse.fromJson(rst.data);
+  }
+
+  Future<void> insertPayments(List<PaymentRecord> prs) async {
+    await _client.post("v1/payment/insert-payments", data: jsonEncode(prs));
+  }
+}
+
+class PlayerConfigApiClient extends PlayerConfigService with _DioClient {
+  late final Dio _client;
+
+  PlayerConfigApiClient() {
+    _client = getClient();
+  }
+
+  @override
+  Future<void> createPlayerConfig(PlayerConfig p) async {
+    await _client.post("v1/player-config", data: jsonEncode(p));
+  }
+
+  @override
+  Future<void> deletePlayerConfig(String pNo) async {
+    await _client.delete("v1/player-config/$pNo");
+  }
+
+  @override
+  Future<GetPlayerConfigsResponse> getPlayerConfigs(
+    int offset,
+    int limit,
+  ) async {
+    final rst = await _client.get(
+      "v1/player-config/get-player-configs/$offset/$limit",
+    );
+    return GetPlayerConfigsResponse.fromJson(rst.data);
+  }
+
+  @override
+  Future<void> updatePlayerConfig(PlayerConfig p) async {
+    await _client.put("v1/player-config", data: jsonEncode(p));
+  }
+
+  Future<void> insertPlayerConfigs(List<PlayerConfig> p) async {
+    await _client.post(
+      "v1/player-config/insert-player-configs",
+      data: jsonEncode(p),
+    );
   }
 }
