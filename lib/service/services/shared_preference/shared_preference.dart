@@ -10,7 +10,25 @@ class SharedPreferencesService {
   static const _accountTokenKey = 'account_token';
   static const _loginTokenKey = 'login_token';
 
+  SharedPreferencesService._();
+  static final _instance = SharedPreferencesService._();
+  static SharedPreferencesService get instance => _instance;
+
   String? _accounToken;
+  TokenInfo? loginToken;
+
+
+  bool get isLoggedIn {
+    if (loginToken == null) return false;
+    if (loginToken!.expiredAt >
+        DateTime.now().millisecondsSinceEpoch ~/ 1000) {
+      return true;
+    } else {
+      loginToken = null;
+      saveLoginToken(null);
+      return false;
+    }
+  }
 
   Future<String> get accountToken async {
     if (_accounToken == null) await createAccountToken();
@@ -53,13 +71,13 @@ class SharedPreferencesService {
   Future<TokenInfo?> fetchLoginToken() async {
     final sp = await SharedPreferences.getInstance();
     final tokenString = sp.getString(_loginTokenKey);
-    if (tokenString == null) {
-      return null;
-    }
-    return TokenInfo.fromJson(jsonDecode(tokenString));
+    if (tokenString == null) return null;
+    loginToken = TokenInfo.fromJson(jsonDecode(tokenString));
+    return loginToken;
   }
 
   Future<void> saveLoginToken(TokenInfo? token) async {
+    loginToken = token;
     final sharedPreferences = await SharedPreferences.getInstance();
     if (token == null) {
       await sharedPreferences.remove(_loginTokenKey);

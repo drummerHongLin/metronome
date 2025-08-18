@@ -55,6 +55,14 @@ mixin _SqliteDb {
 }
 
 class PayDbClient extends PayService with _SqliteDb {
+
+  PayDbClient._();
+
+  static final _instance = PayDbClient._();
+
+  static PayDbClient get instance => _instance;
+
+
   @override
   Future<GetPaymentListResponse> getPaymentList(
     GetPaymentListRequest request,

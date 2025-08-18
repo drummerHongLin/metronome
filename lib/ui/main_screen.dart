@@ -7,6 +7,7 @@ import 'package:flutter_metronome/repo/model/player_config.dart';
 import 'package:flutter_metronome/ui/config_his/config_component.dart';
 import 'package:flutter_metronome/ui/config_his/config_his_panel.dart';
 import 'package:flutter_metronome/ui/config_his/create_config_panel.dart';
+import 'package:flutter_metronome/ui/drawer/view_models/user_view_model.dart';
 import 'package:flutter_metronome/ui/main_screen_view_model.dart';
 import 'package:flutter_metronome/ui/buttons/buttone_sector.dart';
 import 'package:flutter_metronome/ui/drawer/custom_drawer.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_metronome/ui/selector/selector_sector.dart';
 import 'package:flutter_metronome/ui/timer/timer_component.dart';
 import 'package:flutter_metronome/ui/timer/timer_setter.dart';
 import 'package:flutter_metronome/ui/utils/popuprouter_wrapper.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   final MainScreenViewModel viewModel;
@@ -196,8 +198,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   }
 
   void _showSnackBar() {
-    if(widget.viewModel.snackBarMessage.value == null) return;
-    final snackBar = SnackBar(content: Text(widget.viewModel.snackBarMessage.value!,style: TextStyle(fontSize: 10),));
+    if (widget.viewModel.snackBarMessage.value == null) return;
+    final snackBar = SnackBar(
+      content: Text(
+        widget.viewModel.snackBarMessage.value!,
+        style: TextStyle(fontSize: 10),
+      ),
+    );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
@@ -237,7 +244,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           ),
         ],
       ),
-      drawer: CustomDrawer(),
+      drawer: CustomDrawer(viewmodel: context.read<UserViewModel>()),
       body: ListenableBuilder(
         listenable: widget.viewModel,
         builder: (BuildContext context, Widget? child) {

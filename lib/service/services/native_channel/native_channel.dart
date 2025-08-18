@@ -13,11 +13,21 @@ mixin _NativeChannel {
 
 class ThirdPayNCService extends ThirdPayService with _NativeChannel {
 
+  // 单例对象
+  ThirdPayNCService._();
+
+  static final _instance = ThirdPayNCService._();
+
+  static ThirdPayNCService get instance => _instance;
+
 
   // 主动调用逻辑
   // 暂时先不考虑安卓系统的通用
   @override
   Future<TransactionInfo> invokePurchase(int quantity, String token) async {
+
+
+
     final args = jsonEncode({
       'accountId': token, // 用于关联用户信息
       'quantity': quantity,

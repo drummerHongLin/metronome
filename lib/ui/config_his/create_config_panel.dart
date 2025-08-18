@@ -80,7 +80,7 @@ class _CreateConfigPanelState extends State<CreateConfigPanel> {
                           Text("BPM: ${widget.configInfo.bpm}"),
                           Spacer(),
                           Text(
-                            "节拍型: ${widget.configInfo.beatNum}/${widget.configInfo.beatNote}",
+                            "拍号: ${widget.configInfo.beatNum}/${widget.configInfo.beatNote}",
                           ),
                           Spacer(),
                           Text("节拍模式: "),

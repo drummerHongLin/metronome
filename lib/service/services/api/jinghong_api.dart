@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 
 mixin _DioClient {
   static final Dio client = Dio(
-    BaseOptions(baseUrl: "https://www.honghouse.com/api/"),
+    BaseOptions(baseUrl: "https://www.honghouse.cn/api"),
   );
 
   void setToken(String? token) {
@@ -32,11 +32,12 @@ mixin _DioClient {
 }
 
 class UserApiClient extends UserService with _DioClient {
-  late final Dio _client;
+  // 关于全局参数性质，采用单例模式
+  UserApiClient._();
 
-  UserApiClient() {
-    _client = getClient();
-  }
+  static final _instance = UserApiClient._();
+
+  static UserApiClient get instance => _instance;
 
   @override
   set token(String? token) {
@@ -47,7 +48,8 @@ class UserApiClient extends UserService with _DioClient {
   // 含登录，注册，验证功能
   @override
   Future<LoginResponse> login(LoginRequest loginRequest) async {
-    final response = await _client.post(
+    final client = getClient();
+    final response = await client.post(
       "/login",
       data: jsonEncode(loginRequest),
     );
@@ -56,18 +58,21 @@ class UserApiClient extends UserService with _DioClient {
 
   @override
   Future<void> register(RegisterRequest request) async {
-    await _client.post("/v1/users/register", data: jsonEncode(request));
+    final client = getClient();
+    await client.post("/v1/users/register", data: jsonEncode(request));
   }
 
   @override
   Future<GetUserResponse> getUser() async {
-    final res = await _client.get("/v1/users/current-user");
+    final client = getClient();
+    final res = await client.get("/v1/users/current-user");
     return GetUserResponse.fromJson(res.data);
   }
 
   @override
   Future<bool> verifyUser(String username) async {
-    final rst = await _client.get("/v1/users/$username/verify");
+    final client = getClient();
+    final rst = await client.get("/v1/users/$username/verify");
     if (rst.statusCode == 200) {
       return true;
     }
@@ -79,7 +84,9 @@ class UserApiClient extends UserService with _DioClient {
     ChangePasswordRequest request,
     String username,
   ) async {
-    await _client.put(
+    final client = getClient();
+
+    await client.put(
       "/v1/users/$username/change-password",
       data: jsonEncode(request),
     );
@@ -87,7 +94,9 @@ class UserApiClient extends UserService with _DioClient {
 
   @override
   Future<void> sendEmail(String username) async {
-    await _client.get("/v1/users/$username/send-email");
+    final client = getClient();
+
+    await client.get("/v1/users/$username/send-email");
   }
 
   @override
@@ -95,7 +104,9 @@ class UserApiClient extends UserService with _DioClient {
     String username,
     EmailVerifingRequest request,
   ) async {
-    final res = await _client.post(
+    final client = getClient();
+
+    final res = await client.post(
       "/v1/users/$username/verify-email",
       data: jsonEncode(request),
     );
@@ -108,69 +119,73 @@ class UserApiClient extends UserService with _DioClient {
     final formData = FormData.fromMap({
       'file': MultipartFile.fromBytes(f, filename: file.name),
     });
+    final client = getClient();
 
-    await _client.post("/v1/users/$username/set-avatar", data: formData);
+    await client.post("/v1/users/$username/set-avatar", data: formData);
   }
 }
 
 class PayApiClient extends PayService with _DioClient {
-  late final Dio _client;
+  static final _instance = PayApiClient._();
 
-  PayApiClient() {
-    _client = getClient();
-  }
+  static PayApiClient get instance => _instance;
 
+  PayApiClient._();
   // 存储支付记录功能
 
   @override
   Future<CreatePaymentRecordResponse> createPayment(
     CreatePaymentRecordRequest request,
   ) async {
-        // 需要本地生成paymentNo
+    final client = getClient();
+    // 需要本地生成paymentNo
     final paymentNo = "FK${DateTime.now().millisecondsSinceEpoch}";
     // 将请求转化成json
     final paymentInfoJson = request.toJson();
     paymentInfoJson['paymentNo'] = paymentNo;
-    final rst = await _client.post('v1/payment', data: paymentInfoJson);
+    final rst = await client.post('v1/payment', data: paymentInfoJson);
     return CreatePaymentRecordResponse.fromJson(rst.data);
   }
 
   @override
   Future<void> updatePayment(UpdatePaymentRecordRequest request) async {
+    final client = getClient();
     // 如果状态码不是200， 那么Dio会报错，错误处理放在repo中
-    await _client.put('v1/payment', data: jsonEncode(request));
+    await client.put('v1/payment', data: jsonEncode(request));
   }
 
   @override
   Future<GetPaymentListResponse> getPaymentList(
     GetPaymentListRequest request,
   ) async {
-    final rst = await _client.post(
+    final client = getClient();
+    final rst = await client.post(
       'v1/payment/get-payments/${request.start}/${request.end}',
     );
     return GetPaymentListResponse.fromJson(rst.data);
   }
 
   Future<void> insertPayments(List<PaymentRecord> prs) async {
-    await _client.post("v1/payment/insert-payments", data: jsonEncode(prs));
+    final client = getClient();
+    await client.post("v1/payment/insert-payments", data: jsonEncode(prs));
   }
 }
 
 class PlayerConfigApiClient extends PlayerConfigService with _DioClient {
-  late final Dio _client;
-
-  PlayerConfigApiClient() {
-    _client = getClient();
-  }
+  PlayerConfigApiClient();
 
   @override
   Future<void> createPlayerConfig(PlayerConfig p) async {
-    await _client.post("v1/player-config", data: jsonEncode(p));
+    final client = getClient();
+
+    await client.post("v1/player-config", data: jsonEncode(p));
   }
 
   @override
   Future<void> deletePlayerConfig(String pNo) async {
-    await _client.delete("v1/player-config/$pNo");
+    final client = getClient();
+
+    await client.delete("v1/player-config/$pNo");
   }
 
   @override
@@ -178,7 +193,9 @@ class PlayerConfigApiClient extends PlayerConfigService with _DioClient {
     int offset,
     int limit,
   ) async {
-    final rst = await _client.get(
+    final client = getClient();
+
+    final rst = await client.get(
       "v1/player-config/get-player-configs/$offset/$limit",
     );
     return GetPlayerConfigsResponse.fromJson(rst.data);
@@ -186,11 +203,15 @@ class PlayerConfigApiClient extends PlayerConfigService with _DioClient {
 
   @override
   Future<void> updatePlayerConfig(PlayerConfig p) async {
-    await _client.put("v1/player-config", data: jsonEncode(p));
+    final client = getClient();
+
+    await client.put("v1/player-config", data: jsonEncode(p));
   }
 
   Future<void> insertPlayerConfigs(List<PlayerConfig> p) async {
-    await _client.post(
+    final client = getClient();
+
+    await client.post(
       "v1/player-config/insert-player-configs",
       data: jsonEncode(p),
     );

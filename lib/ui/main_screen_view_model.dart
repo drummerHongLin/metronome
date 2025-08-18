@@ -22,12 +22,18 @@ class MainScreenViewModel extends ChangeNotifier {
     changePlayer();
   }
 
+  // 更新存储缘
+  MainScreenViewModel updatePlayerConfig(PlayerConfigRepo configRepo){
+    _configRepo = configRepo;
+    return this;
+  }
+
   // 消息提示组件
 
   ValueNotifier<String?> snackBarMessage = ValueNotifier(null);
 
   // 依赖注入
-  final PlayerConfigRepo _configRepo;
+  PlayerConfigRepo _configRepo;
 
   // 历史配置相关
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_metronome/service/interface/pay.dart';
 import 'package:flutter_metronome/service/model/pay/pay_data.dart';
 import 'package:flutter_metronome/service/model/third_pay/third_pay_data.dart';
 import 'package:flutter_metronome/service/services/api/jinghong_api.dart';
@@ -8,8 +9,8 @@ import 'package:flutter_metronome/service/services/sql_lite/sql_lite.dart';
 import 'package:intl/intl.dart';
 
 Future<bool> dataTransmit() async {
-  final payDbClient = PayDbClient();
-  final payApiClient = PayApiClient();
+  final payDbClient = PayDbClient.instance;
+  final payApiClient = PayApiClient.instance;
   final playerConfigApiClient = PlayerConfigApiClient();
   final playerConfigDbClient = PlayerConfigDbClient();
 
@@ -28,10 +29,10 @@ Future<bool> dataTransmit() async {
   return true;
 }
 
-Future<bool> handleUpdateTransaction(dynamic arguments) async {
-  // 先用本地库，后面登录还有同步信息
-  final payService = PayDbClient();
-
+Future<bool> handleUpdateTransaction(
+  dynamic arguments,
+  PayService payService,
+) async {
   final rst = arguments;
   List<int> decodedBytes = base64Decode(rst);
   String jsonStr = utf8.decode(decodedBytes);

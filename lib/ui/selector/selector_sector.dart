@@ -48,7 +48,7 @@ class SelectorSector extends StatelessWidget {
         ),
         SelectorContainer(
           size: Size(100, 82),
-          label: "节奏型",
+          label: "拍号",
           showSelector: showBeatSelector,
           child: Text(
             "$beatNum/$beatNote",
