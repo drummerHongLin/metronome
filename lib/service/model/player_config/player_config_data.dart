@@ -6,7 +6,7 @@ part 'player_config_data.freezed.dart';
 @freezed
 abstract class PlayerConfig with _$PlayerConfig {
   const factory PlayerConfig({
-    required String playerConfigNo,
+    required String playConfigNo,
     required String createTime,
     required String updateTime,
     required int bpm,
@@ -25,7 +25,7 @@ abstract class PlayerConfig with _$PlayerConfig {
 abstract class GetPlayerConfigsResponse with _$GetPlayerConfigsResponse {
   const factory GetPlayerConfigsResponse({
     required bool hasMore,
-    required List<PlayerConfig> playerConfigs,
+    required List<PlayerConfig> playConfigs,
   }) = _GetPlayerConfigsResponse;
 
   factory GetPlayerConfigsResponse.fromJson(Map<String, dynamic> json) =>

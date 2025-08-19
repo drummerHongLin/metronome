@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/repo/model/user.dart';
-import 'package:flutter_metronome/theme/colors.dart';
 import 'package:flutter_metronome/ui/auth/auth_viewmodel.dart';
 import 'package:go_router/go_router.dart';
 
@@ -197,9 +196,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Center(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 400),
+        constraints: BoxConstraints(maxWidth:  MediaQuery.of(context).size.width * 0.8),
         child: Card(
-          color: AppColors.active,
+          color:  Theme.of(context).colorScheme.primaryContainer,
           child: Padding(
             padding: EdgeInsets.all(24),
             child: Form(
@@ -354,10 +353,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       child:
                           _isLoading
-                              ? CircularProgressIndicator(color: Colors.white)
+                              ? CircularProgressIndicator(color:  Theme.of(context).colorScheme.primary)
                               : Text(
                                 '注册',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(color:  Theme.of(context).colorScheme.primary),
                               ),
                     ),
                   ),

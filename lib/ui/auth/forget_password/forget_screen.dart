@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_metronome/theme/colors.dart';
 import 'package:flutter_metronome/ui/auth/auth_viewmodel.dart';
 import 'package:go_router/go_router.dart';
 
@@ -183,9 +182,9 @@ class _ForgetScreenState extends State<ForgetScreen> {
   Widget build(BuildContext context) {
     return Center(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 400),
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width *0.8),
         child: Card(
-          color: AppColors.active,
+          color: Theme.of(context).colorScheme.primaryContainer,
           child: Padding(
             padding: EdgeInsets.all(24),
             child: Form(

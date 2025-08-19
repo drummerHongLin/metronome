@@ -33,7 +33,7 @@ class PlayerConfigInfo {
     ).map((e) => BeatType.fromIndex(e)).toList();
     final referenceBeat = ReferenceBeat.fromIndex(p.referenceBeat);
     return PlayerConfigInfo(
-      playerConfigNo: p.playerConfigNo,
+      playerConfigNo: p.playConfigNo,
       createTime: p.createTime,
       updateTime: p.updateTime,
       bpm: p.bpm,

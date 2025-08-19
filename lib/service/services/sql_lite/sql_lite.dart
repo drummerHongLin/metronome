@@ -164,7 +164,7 @@ class PlayerConfigDbClient extends PlayerConfigService with _SqliteDb {
 
     return GetPlayerConfigsResponse(
       hasMore: hasMore,
-      playerConfigs: playerConfigList,
+      playConfigs: playerConfigList,
     );
   }
 
@@ -175,7 +175,7 @@ class PlayerConfigDbClient extends PlayerConfigService with _SqliteDb {
       'player_config',
       p.toJson(),
       where: "playerConfigNo = ?",
-      whereArgs: [p.playerConfigNo],
+      whereArgs: [p.playConfigNo],
     );
     return;
   }

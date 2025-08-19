@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/repo/model/user.dart';
 import 'package:flutter_metronome/route/routes.dart';
-import 'package:flutter_metronome/theme/colors.dart';
 import 'package:flutter_metronome/ui/auth/auth_viewmodel.dart';
 import 'package:flutter_metronome/ui/utils/circle_img.dart';
 import 'package:flutter_metronome/utils/result.dart';
@@ -28,9 +27,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Center(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 400),
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.8),
         child: Card(
-          color: AppColors.active,
+          color:  Theme.of(context).colorScheme.primaryContainer,
           child: Padding(
             padding: EdgeInsets.all(24),
             child: ListenableBuilder(

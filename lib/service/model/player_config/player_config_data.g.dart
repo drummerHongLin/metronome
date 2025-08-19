@@ -8,7 +8,7 @@ part of 'player_config_data.dart';
 
 _PlayerConfig _$PlayerConfigFromJson(Map<String, dynamic> json) =>
     _PlayerConfig(
-      playerConfigNo: json['playerConfigNo'] as String,
+      playConfigNo: json['playConfigNo'] as String,
       createTime: json['createTime'] as String,
       updateTime: json['updateTime'] as String,
       bpm: (json['bpm'] as num).toInt(),
@@ -21,7 +21,7 @@ _PlayerConfig _$PlayerConfigFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$PlayerConfigToJson(_PlayerConfig instance) =>
     <String, dynamic>{
-      'playerConfigNo': instance.playerConfigNo,
+      'playConfigNo': instance.playConfigNo,
       'createTime': instance.createTime,
       'updateTime': instance.updateTime,
       'bpm': instance.bpm,
@@ -36,7 +36,7 @@ _GetPlayerConfigsResponse _$GetPlayerConfigsResponseFromJson(
   Map<String, dynamic> json,
 ) => _GetPlayerConfigsResponse(
   hasMore: json['hasMore'] as bool,
-  playerConfigs: (json['playerConfigs'] as List<dynamic>)
+  playConfigs: (json['playConfigs'] as List<dynamic>)
       .map((e) => PlayerConfig.fromJson(e as Map<String, dynamic>))
       .toList(),
 );
@@ -45,5 +45,5 @@ Map<String, dynamic> _$GetPlayerConfigsResponseToJson(
   _GetPlayerConfigsResponse instance,
 ) => <String, dynamic>{
   'hasMore': instance.hasMore,
-  'playerConfigs': instance.playerConfigs,
+  'playConfigs': instance.playConfigs,
 };

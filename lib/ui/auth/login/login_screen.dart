@@ -5,7 +5,6 @@ import 'package:flutter_metronome/theme/colors.dart';
 import 'package:flutter_metronome/ui/auth/auth_viewmodel.dart';
 import 'package:go_router/go_router.dart';
 
-
 // 独立元素不多，就在当前文件中描写
 
 class LoginScreen extends StatefulWidget {
@@ -67,26 +66,25 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<bool> _onWillPop() async {
     return await showDialog(
           context: context,
-          builder:
-              (context) => AlertDialog(
-                title: Text('确认退出'),
-                content: Text('确定要退出登录吗？'),
-                actions: [
-                  TextButton(
-                    onPressed: () => context.pop(false),
-                    child: Text('取消'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // 执行退出操作
-                      context.pop(true); // 关闭应用（根据需求修改）
-                      // 如果只是返回上一页可以使用：
-                      // Navigator.of(context).pop(true);
-                    },
-                    child: Text('确定', style: TextStyle(color: Colors.red)),
-                  ),
-                ],
+          builder: (context) => AlertDialog(
+            title: Text('确认退出'),
+            content: Text('确定要退出登录吗？'),
+            actions: [
+              TextButton(
+                onPressed: () => context.pop(false),
+                child: Text('取消'),
               ),
+              TextButton(
+                onPressed: () {
+                  // 执行退出操作
+                  context.pop(true); // 关闭应用（根据需求修改）
+                  // 如果只是返回上一页可以使用：
+                  // Navigator.of(context).pop(true);
+                },
+                child: Text('确定', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          ),
         ) ??
         false;
   }
@@ -116,9 +114,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Center(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 400),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.8,
+        ),
         child: Card(
-          color: AppColors.active,
+          color: Theme.of(context).colorScheme.primaryContainer,
           child: Padding(
             padding: EdgeInsets.all(24),
             child: Form(
@@ -181,25 +181,30 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child:
-                          _isLoading
-                              ? CircularProgressIndicator(color: Colors.white)
-                              : Text(
-                                '登录',
-                                style: TextStyle(color: Colors.white),
+                      child: _isLoading
+                          ? CircularProgressIndicator(
+                              color: Theme.of(context).colorScheme.primary,
+                            )
+                          : Text(
+                              '登录',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
                               ),
+                            ),
                     ),
                   ),
                   SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextButton(onPressed: ()async {
-                                       final rst = await context.push(Routes.forget);
+                      TextButton(
+                        onPressed: () async {
+                          final rst = await context.push(Routes.forget);
                           if (rst == true) return;
                           closeScreen();
-
-                      }, child: Text('忘记密码?')),
+                        },
+                        child: Text('忘记密码?'),
+                      ),
                       TextButton(
                         onPressed: () async {
                           final rst = await context.push(Routes.register);

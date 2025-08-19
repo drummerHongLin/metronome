@@ -2,7 +2,6 @@ import 'dart:io' show File;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_metronome/theme/colors.dart';
 import 'package:flutter_metronome/ui/auth/auth_viewmodel.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -67,9 +66,9 @@ class _AddAvatarState extends State<AddAvatar> {
       
       Center(
         child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 400,maxHeight: 400),
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width *0.8,maxHeight: MediaQuery.of(context).size.width *0.8),
           child: Card(
-            color: AppColors.active,
+            color:  Theme.of(context).colorScheme.primaryContainer,
             child: Padding(
               padding: EdgeInsets.all(10),
               child: Column(

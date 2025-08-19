@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 
 mixin _DioClient {
   static final Dio client = Dio(
-    BaseOptions(baseUrl: "https://www.honghouse.cn/api"),
+    BaseOptions(baseUrl: "https://www.honghouse.cn/api/"),
   );
 
   void setToken(String? token) {
@@ -167,7 +167,7 @@ class PayApiClient extends PayService with _DioClient {
 
   Future<void> insertPayments(List<PaymentRecord> prs) async {
     final client = getClient();
-    await client.post("v1/payment/insert-payments", data: jsonEncode(prs));
+    await client.post("/v1/payment/insert-payments", data: jsonEncode(prs));
   }
 }
 
@@ -178,14 +178,14 @@ class PlayerConfigApiClient extends PlayerConfigService with _DioClient {
   Future<void> createPlayerConfig(PlayerConfig p) async {
     final client = getClient();
 
-    await client.post("v1/player-config", data: jsonEncode(p));
+    await client.post("/v1/player", data: jsonEncode(p));
   }
 
   @override
   Future<void> deletePlayerConfig(String pNo) async {
     final client = getClient();
 
-    await client.delete("v1/player-config/$pNo");
+    await client.delete("/v1/player/$pNo");
   }
 
   @override
@@ -196,7 +196,7 @@ class PlayerConfigApiClient extends PlayerConfigService with _DioClient {
     final client = getClient();
 
     final rst = await client.get(
-      "v1/player-config/get-player-configs/$offset/$limit",
+      "/v1/player/get-play-configs/$offset/$limit",
     );
     return GetPlayerConfigsResponse.fromJson(rst.data);
   }
@@ -205,14 +205,14 @@ class PlayerConfigApiClient extends PlayerConfigService with _DioClient {
   Future<void> updatePlayerConfig(PlayerConfig p) async {
     final client = getClient();
 
-    await client.put("v1/player-config", data: jsonEncode(p));
+    await client.put("/v1/player", data: jsonEncode(p));
   }
 
   Future<void> insertPlayerConfigs(List<PlayerConfig> p) async {
     final client = getClient();
 
     await client.post(
-      "v1/player-config/insert-player-configs",
+      "/v1/player/insert-play-configs",
       data: jsonEncode(p),
     );
   }
