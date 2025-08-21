@@ -46,6 +46,21 @@ enum BeatType {
 
   String get path => 'assets/images/$name.webp';
 
+  String pathNote(int? noteName) {
+    if (noteName != null) {
+      final a = switch (noteName) {
+        2 => "half_note",
+        4 => "quarter_note",
+        8 => "quaver",
+        16 => "semi_quaver",
+        _ => "",
+      };
+      return 'assets/images/$a.webp';
+    } else {
+      return path;
+    }
+  }
+
   factory BeatType.fromIndex(int i) {
     assert(i >= 0 && i < BeatType.values.length);
     return BeatType.values[i];

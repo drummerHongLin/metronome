@@ -18,12 +18,12 @@ class MainScreenViewModel extends ChangeNotifier {
     _player = AudioPlayer();
     _player.setLoopMode(LoopMode.all);
     getConfigHis = Command0(_getConfigHis);
-    deleteConfig = Command1<void,PlayerConfigInfo>(_deleteConfig);
+    deleteConfig = Command1<void, PlayerConfigInfo>(_deleteConfig);
     changePlayer();
   }
 
   // 更新存储缘
-  MainScreenViewModel updatePlayerConfig(PlayerConfigRepo configRepo){
+  MainScreenViewModel updatePlayerConfig(PlayerConfigRepo configRepo) {
     _configRepo = configRepo;
     return this;
   }
@@ -39,7 +39,7 @@ class MainScreenViewModel extends ChangeNotifier {
 
   ValueNotifier<PlayerConfigInfo?> currentConfig = ValueNotifier(null);
 
-  List<PlayerConfigInfo> configHis = []; 
+  List<PlayerConfigInfo> configHis = [];
 
   late final Command0 getConfigHis;
   late final Command1 deleteConfig;
@@ -114,10 +114,13 @@ class MainScreenViewModel extends ChangeNotifier {
     if (v != _beatNote) {
       _isChange = true;
       _beatNote = v;
+      if (v != 4) {
+        setBeatsToA();
+      }
     }
   }
 
-  get beatNote => _beatNote;
+  int get beatNote => _beatNote;
 
   // 4. 参考音符
   ReferenceBeat _referenceBeat = ReferenceBeat.quarter_note;
@@ -139,6 +142,12 @@ class MainScreenViewModel extends ChangeNotifier {
     if (_beatTypes[index] != value) {
       _beatTypes[index] = value;
       _isChange = true;
+    }
+  }
+
+  void setBeatsToA() {
+    for (var i = 0; i < _beatTypes.length; i++) {
+      _beatTypes[i] = BeatType.A;
     }
   }
 
@@ -352,23 +361,22 @@ class MainScreenViewModel extends ChangeNotifier {
 
   // 3. 删除配置信息
   Future<Result<void>> _deleteConfig(PlayerConfigInfo p) async {
-      if(currentConfig.value != null && currentConfig.value!.playerConfigNo == p.playerConfigNo) currentConfig.value = null;
-      final rst = await _configRepo.deletePlayerConfig(p.playerConfigNo);
-      rst.when(success: (v){
-        configHis.removeWhere((c)=>c.playerConfigNo == p.playerConfigNo);
-      }, failure: (_,__){});
-      return rst;
+    if (currentConfig.value != null &&
+        currentConfig.value!.playerConfigNo == p.playerConfigNo)
+      currentConfig.value = null;
+    final rst = await _configRepo.deletePlayerConfig(p.playerConfigNo);
+    rst.when(
+      success: (v) {
+        configHis.removeWhere((c) => c.playerConfigNo == p.playerConfigNo);
+      },
+      failure: (_, __) {},
+    );
+    return rst;
   }
 
   // 4. 更新当前播放器
-  void setPlayerByConfig(PlayerConfigInfo p){
+  void setPlayerByConfig(PlayerConfigInfo p) {
     currentConfig.value = p;
-    resetPlayer(
-      p.bpm,
-      p.beatNum,
-      p.beatNote,
-      p.referenceBeat,
-      p.subBeats
-    );
+    resetPlayer(p.bpm, p.beatNum, p.beatNote, p.referenceBeat, p.subBeats);
   }
 }

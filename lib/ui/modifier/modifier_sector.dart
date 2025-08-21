@@ -4,6 +4,7 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class ModifierSector extends StatelessWidget {
   final int bpm;
+  final int note;
   final Function(int v) onChangeStart;
   final Function(int v) onChangeEnd;
   final Function(int v) onChanged;
@@ -17,7 +18,7 @@ class ModifierSector extends StatelessWidget {
     required this.onChangeEnd,
     required this.onChanged,
     required this.beatTypes,
-    required this.showSelector,
+    required this.showSelector, required this.note,
   });
 
   @override
@@ -82,11 +83,11 @@ class ModifierSector extends StatelessWidget {
                             builder:
                                 (innerContext) => GestureDetector(
                                   onTap:
-                                      () => showSelector(innerContext, index),
+                                    note !=4 ? ()=> ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("细分音符仅在拍号为 x/4 时有效！"))) : ()=> showSelector(innerContext, index),
                                   onVerticalDragStart:
-                                      (_) => showSelector(innerContext, index),
+                                      note !=4 ? (_)=> ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("细分音符仅在拍号为 x/4 时有效！"))) : (_)=> showSelector(innerContext, index),
                                   child: Image.asset(
-                                    beatTypes[index].path,
+                                    note !=4 ? beatTypes[index].pathNote(note): beatTypes[index].path,
                                     fit: BoxFit.scaleDown,
                                     height: 40,
                                     width: 40,

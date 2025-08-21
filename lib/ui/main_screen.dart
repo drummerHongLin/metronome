@@ -270,6 +270,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 ),
                 ModifierSector(
                   bpm: widget.viewModel.bpm,
+                  note: widget.viewModel.beatNote,
                   onChangeStart: (v) {
                     beforeChange();
                     widget.viewModel.lastBpm = v;
