@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/repo/model/user.dart';
 import 'package:flutter_metronome/route/routes.dart';
-import 'package:flutter_metronome/theme/colors.dart';
 import 'package:flutter_metronome/ui/auth/auth_viewmodel.dart';
 import 'package:go_router/go_router.dart';
 
@@ -120,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Card(
           color: Theme.of(context).colorScheme.primaryContainer,
           child: Padding(
-            padding: EdgeInsets.all(24),
+            padding: EdgeInsets.all(12),
             child: Form(
               key: _formKey,
               canPop: !isEdited(),
@@ -130,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.account_circle, size: 100),
-                  SizedBox(height: 40),
+                  SizedBox(height: 20),
                   TextFormField(
                     controller: _usernameController,
                     decoration: InputDecoration(
@@ -151,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
@@ -170,10 +169,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   if (_errorMessage.isNotEmpty)
                     Text(_errorMessage, style: TextStyle(color: Colors.red)),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -193,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

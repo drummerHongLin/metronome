@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/repo/model/user.dart';
@@ -11,18 +14,37 @@ import 'package:image_picker/image_picker.dart';
 class AuthRepo extends ChangeNotifier {
   final SharedPreferencesService _preferencesService;
   final UserService _userClient;
-
+  late final StreamSubscription<List<ConnectivityResult>> subscription;
   AuthRepo({
     required SharedPreferencesService preferencesService,
     required UserService userService,
   }) : _userClient = userService,
-       _preferencesService = preferencesService;
-
+       _preferencesService = preferencesService {
+    subscription = Connectivity().onConnectivityChanged.listen(listenConnectChange);
+  }
 
   bool get isLoggedIn {
-    if (_preferencesService.isLoggedIn) return true;
+    if (_preferencesService.isLoggedIn && isConnected ) return true;
     //fetchLocalToken();
     return false;
+  }
+
+  bool isConnected = true;
+
+  void listenConnectChange(List<ConnectivityResult> result) {
+    if (result.contains(ConnectivityResult.mobile) ||
+        result.contains(ConnectivityResult.wifi)) {
+      isConnected = true;
+    } else {
+      isConnected = false;
+    }
+    notifyListeners();
+  }
+
+  @override
+  dispose(){
+    subscription.cancel();
+    super.dispose();
   }
 
   set token(TokenInfo? v) {
@@ -30,7 +52,6 @@ class AuthRepo extends ChangeNotifier {
     _preferencesService.saveLoginToken(v);
     notifyListeners();
   }
-
 
   Future<Result<void>> changePassword(
     String newPassword,

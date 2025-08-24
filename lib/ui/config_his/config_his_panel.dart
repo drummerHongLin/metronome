@@ -154,9 +154,8 @@ class _ConfigTile extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text("${configInfo.bpm} BPM"),
                       Text(
-                        " · ${configInfo.beatNum}/${configInfo.beatNote} · ",
+                        "  ${configInfo.beatNum}/${configInfo.beatNote} ·",
                       ),
                       Image.asset(
                         configInfo.referenceBeat.path,
@@ -164,6 +163,9 @@ class _ConfigTile extends StatelessWidget {
                         fit: BoxFit.scaleDown,
                          color: Theme.of(context).colorScheme.onSurface
                       ),
+                      Text(" = ${configInfo.bpm} BPM"),
+
+     
                     ],
                   ),
                   Text(configInfo.createTime, style: TextStyle(fontSize: 10)),

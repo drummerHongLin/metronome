@@ -11,7 +11,10 @@ import 'package:image_picker/image_picker.dart';
 
 mixin _DioClient {
   static final Dio client = Dio(
-    BaseOptions(baseUrl: "https://www.honghouse.cn/api/"),
+    BaseOptions(baseUrl: "https://www.honghouse.cn/api/",
+    connectTimeout: Duration(seconds: 5),
+    sendTimeout: Duration(seconds: 3),
+    receiveTimeout: Duration(seconds: 3)),
   );
 
   void setToken(String? token) {
@@ -143,15 +146,15 @@ class PayApiClient extends PayService with _DioClient {
     // 将请求转化成json
     final paymentInfoJson = request.toJson();
     paymentInfoJson['paymentNo'] = paymentNo;
-    final rst = await client.post('v1/payment', data: paymentInfoJson);
-    return CreatePaymentRecordResponse.fromJson(rst.data);
+    client.post('/v1/payment', data: paymentInfoJson);
+    return CreatePaymentRecordResponse(paymentNo: paymentNo);
   }
 
   @override
   Future<void> updatePayment(UpdatePaymentRecordRequest request) async {
     final client = getClient();
     // 如果状态码不是200， 那么Dio会报错，错误处理放在repo中
-    await client.put('v1/payment', data: jsonEncode(request));
+    await client.put('/v1/payment', data: jsonEncode(request));
   }
 
   @override
@@ -160,7 +163,7 @@ class PayApiClient extends PayService with _DioClient {
   ) async {
     final client = getClient();
     final rst = await client.post(
-      'v1/payment/get-payments/${request.start}/${request.end}',
+      '/v1/payment/get-payments/${request.start}/${request.end}',
     );
     return GetPaymentListResponse.fromJson(rst.data);
   }

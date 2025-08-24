@@ -3,6 +3,7 @@ import 'package:flutter_metronome/route/routes.dart';
 import 'package:flutter_metronome/ui/drawer/view_models/user_view_model.dart';
 import 'package:flutter_metronome/ui/drawer/widgets/jinghong_info.dart';
 import 'package:flutter_metronome/ui/drawer/widgets/sponsorship_info.dart';
+import 'package:flutter_metronome/ui/drawer/widgets/user_panel.dart';
 import 'package:flutter_metronome/ui/drawer/widgets/version_info.dart';
 import 'package:flutter_metronome/ui/utils/circle_img.dart';
 import 'package:flutter_metronome/ui/utils/popuprouter_wrapper.dart';
@@ -71,118 +72,56 @@ class _CustomDrawerState extends State<CustomDrawer> {
             ),
           ),
           ListenableBuilder(
-                listenable: widget.viewmodel.loadUserInfo,
-                builder: (ctx, child) {
-                  if (widget.viewmodel.loadUserInfo.running) {
-                    return SizedBox(
-                      height: 40,
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return child!;
-                },
-                child: ValueListenableBuilder(
-                  valueListenable: widget.viewmodel.userInfo,
-                  builder: (ctx, userInfo, c) {
-                    final avatarUrl =
-                        userInfo == null
-                            ? 'https://ai-tang.oss-cn-shanghai.aliyuncs.com/jinghong/%E6%9C%AA%E7%99%BB%E5%BD%95.png'
-                            : 'https://www.honghouse.cn/api/v1/users/${userInfo.username}/get-avatar';
-                    final nickName = userInfo?.nickname ?? '未登录';
-                    final operationIcon =
-                        userInfo == null
-                            ? Icons.login_outlined
-                            : Icons.logout_outlined;
-                    final operation =
-                        userInfo == null
-                            ? () {
-                              context
-                                  .push(Routes.login)
-                                  .then(
-                                    (_) =>
-                                        widget.viewmodel.loadUserInfo.execute(),
-                                  );
-                            }
-                            : widget.viewmodel.logout;
+            listenable: widget.viewmodel.loadUserInfo,
+            builder: (ctx, child) {
+              if (widget.viewmodel.loadUserInfo.running) {
+                return SizedBox(height: 40, child: CircularProgressIndicator());
+              }
+              return child!;
+            },
+            child: ValueListenableBuilder(
+              valueListenable: widget.viewmodel.userInfo,
+              builder: (ctx, userInfo, c) {
+                final avatarUrl = userInfo == null
+                    ? 'https://ai-tang.oss-cn-shanghai.aliyuncs.com/jinghong/%E6%9C%AA%E7%99%BB%E5%BD%95.png'
+                    : 'https://www.honghouse.cn/api/v1/users/${userInfo.username}/get-avatar';
+                final nickName = userInfo?.nickname ?? '未登录';
+                final operationIcon = userInfo == null
+                    ? Icons.login_outlined
+                    : Icons.logout_outlined;
+                final operation = userInfo == null
+                    ? () {
+                        context
+                            .push(Routes.login)
+                            .then(
+                              (_) => widget.viewmodel.loadUserInfo.execute(),
+                            );
+                      }
+                    : widget.viewmodel.logout;
 
-                    final headers =
-                        userInfo == null
-                            ? null
-                            : <String, String>{
-                              "Authorization": "Bearer ${userInfo.token}",
-                            };
+                final headers = userInfo == null
+                    ? null
+                    : <String, String>{
+                        "Authorization": "Bearer ${userInfo.token}",
+                      };
 
-                    profileWindow() {
-                      context
-                          .push(Routes.profile)
-                          .then((_) => widget.viewmodel.loadUserInfo.execute());
-                    }
+                profileWindow() {
+                  context
+                      .push(Routes.profile)
+                      .then((_) => widget.viewmodel.loadUserInfo.execute());
+                }
 
-                    return UserPanel(
-                      avatarUrl: avatarUrl,
-                      nickname: nickName,
-                      operationIcon: operationIcon,
-                      operation: operation,
-                      headers: headers,
-                      profileWindow: profileWindow,
-                    );
-                  },
-                ),
-              ),
-        ],
-      ),
-    );
-  }
-}
-
-
-
-
-
-
-class UserPanel extends StatelessWidget {
-  final String avatarUrl;
-  final String nickname;
-  final IconData operationIcon;
-  final VoidCallback operation;
-  final VoidCallback profileWindow;
-  final Map<String, String>? headers;
-
-  const UserPanel({
-    super.key,
-    required this.avatarUrl,
-    required this.nickname,
-    required this.operationIcon,
-    required this.operation,
-    required this.headers, required this.profileWindow,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          InkWell(
-            onTap: profileWindow,
-            child:      CircleNetImg(
-            imgUrl: avatarUrl,
-            imgSize: Size(35, 35),
-            headers: headers,
-          )
-          
-          )
-     
-          ,
-          Text(
-            nickname,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontSize: 20),
+                return UserPanel(
+                  avatarUrl: avatarUrl,
+                  nickname: nickName,
+                  operationIcon: operationIcon,
+                  operation: operation,
+                  headers: headers,
+                  profileWindow: profileWindow,
+                );
+              },
+            ),
           ),
-          IconButton(onPressed: operation, icon: Icon(operationIcon, size: 30)),
         ],
       ),
     );

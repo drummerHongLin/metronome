@@ -77,19 +77,19 @@ class _CreateConfigPanelState extends State<CreateConfigPanel> {
                     children: [
                       Row(
                         children: [
-                          Text("BPM: ${widget.configInfo.bpm}"),
-                          Spacer(),
                           Text(
                             "拍号: ${widget.configInfo.beatNum}/${widget.configInfo.beatNote}",
                           ),
                           Spacer(),
-                          Text("节拍模式: "),
+                          Text("速度："),
                           Image.asset(
                             widget.configInfo.referenceBeat.path,
                             height: 14,
                             fit: BoxFit.scaleDown,
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
+                          Text("= ${widget.configInfo.bpm} BPM"),
+                          Spacer(),
                         ],
                       ),
                       Text("细分节拍: "),

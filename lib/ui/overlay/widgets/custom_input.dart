@@ -128,6 +128,7 @@ class _CustomInputState extends State<CustomInput> {
                                 _controller.text = widget.bpm.toString();
                               }
                             },
+                            onChanged: (value) => _onvalueChange(int.parse(value)),
                           ),
                         ),
                         Column(

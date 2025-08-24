@@ -31,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Card(
           color:  Theme.of(context).colorScheme.primaryContainer,
           child: Padding(
-            padding: EdgeInsets.all(24),
+            padding: EdgeInsets.all(12),
             child: ListenableBuilder(
               listenable: widget.viewmodel.loadUserInfo,
               builder: (context, c) {

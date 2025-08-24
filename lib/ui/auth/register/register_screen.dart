@@ -200,7 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Card(
           color:  Theme.of(context).colorScheme.primaryContainer,
           child: Padding(
-            padding: EdgeInsets.all(24),
+            padding: EdgeInsets.all(12),
             child: Form(
               key: _formKey,
               canPop: !isEdited(),
@@ -224,7 +224,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _usernameController,
                     readOnly: _isSendCode,
@@ -246,7 +246,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _passwordController,
                          readOnly: _isSendCode,
@@ -266,7 +266,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _passwordConfirmController,
                          readOnly: _isSendCode,
@@ -286,7 +286,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _nicknameController,
                          readOnly: _isSendCode,
@@ -303,7 +303,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _emailController,
                          readOnly: _isSendCode,
@@ -325,7 +325,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _codedController,
                     decoration: InputDecoration(
@@ -340,10 +340,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     obscureText: true,
                   ),
 
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   if (_errorMessage.isNotEmpty)
                     Text(_errorMessage, style: TextStyle(color: Colors.red)),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(

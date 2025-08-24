@@ -37,6 +37,8 @@
   ],
   "settings" : {
     "_failTransactionsEnabled" : false,
+    "_locale" : "zh_Hans",
+    "_storefront" : "CHN",
     "_storeKitErrors" : [
       {
         "current" : null,

@@ -287,12 +287,11 @@ class MainScreenViewModel extends ChangeNotifier {
     ReferenceBeat referenceBeat,
     List<BeatType> beatTypes,
   ) {
-    _bpm = bpm;
-    _beatNote = beatNote;
-    _beatNum = beatNum;
-    _referenceBeat = referenceBeat;
     _beatTypes = beatTypes;
-    changePlayer();
+    this.bpm = bpm;
+    this.beatNote = beatNote;
+    this.beatNum = beatNum;
+    this.referenceBeat = referenceBeat;
   }
 
   // 播放设置相关
@@ -362,8 +361,9 @@ class MainScreenViewModel extends ChangeNotifier {
   // 3. 删除配置信息
   Future<Result<void>> _deleteConfig(PlayerConfigInfo p) async {
     if (currentConfig.value != null &&
-        currentConfig.value!.playerConfigNo == p.playerConfigNo)
+        currentConfig.value!.playerConfigNo == p.playerConfigNo) {
       currentConfig.value = null;
+    }
     final rst = await _configRepo.deletePlayerConfig(p.playerConfigNo);
     rst.when(
       success: (v) {

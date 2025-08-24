@@ -33,7 +33,7 @@ class StoreManager {
     // 全局单例对象
     static let shared = StoreManager()
     private let productIdentifiers: Set<String> = [
-        "onecupofcoffee"
+        "jinghong_metronome_coffee_1"
     ]
     // 交易更新任务
     private var transactionUpdatesTask: Task<Void, Never>?

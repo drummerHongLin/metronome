@@ -186,7 +186,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
         child: Card(
           color: Theme.of(context).colorScheme.primaryContainer,
           child: Padding(
-            padding: EdgeInsets.all(24),
+            padding: EdgeInsets.all(12),
             child: Form(
               key: _formKey,
               canPop: !isEdited(),
@@ -210,7 +210,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _usernameController,
                     readOnly: _isSendCode,
@@ -232,7 +232,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _passwordController,
                     readOnly: _isSendCode,
@@ -252,7 +252,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _passwordConfirmController,
                     readOnly: _isSendCode,
@@ -272,7 +272,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _codedController,
                     decoration: InputDecoration(
@@ -292,10 +292,10 @@ class _ForgetScreenState extends State<ForgetScreen> {
                     obscureText: true,
                   ),
 
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   if (_errorMessage.isNotEmpty)
                     Text(_errorMessage, style: TextStyle(color: Colors.red)),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(

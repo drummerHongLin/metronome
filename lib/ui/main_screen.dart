@@ -69,6 +69,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       DefaultData.referenceBeat,
       [BeatType.A, BeatType.A, BeatType.A, BeatType.A],
     );
+    widget.viewModel.changePlayer() ;
     beatController.duration = Duration(
       milliseconds: widget.viewModel.duration * widget.viewModel.beatNum,
     );
