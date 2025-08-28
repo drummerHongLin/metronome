@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_metronome/configs/data_type.dart';
+import 'package:flutter_metronome/repo/model/payment.dart';
 import 'package:flutter_metronome/service/interface/pay.dart';
 import 'package:flutter_metronome/service/interface/third_pay.dart';
 import 'package:flutter_metronome/service/model/pay/pay_data.dart';
@@ -70,5 +71,18 @@ class PayRepo {
     }
 
     return Success(null);
+  }
+
+  Future<Result<List<Payment>>> getPaymentList(int offset, int limit) async {
+    try {
+      final token = await _preferencesService.accountToken;
+      final rst = await _payService.getPaymentList(
+        GetPaymentListRequest(start: offset, end: limit, accountToken: token),
+      );
+      final list = rst.paymentRecords;
+      return Success(list.map((e) => Payment.fromService(e)).toList());
+    } on Exception catch (e) {
+      return Failure("获取支付记录失败！", e);
+    }
   }
 }

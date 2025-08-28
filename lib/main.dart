@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_metronome/dependency/initiate_app.dart';
 import 'package:flutter_metronome/repo/agreement_repo.dart';
 import 'package:flutter_metronome/route/router.dart';
@@ -11,7 +12,15 @@ void main() async {
   // 保障flutter相关信息初始化完成
   WidgetsFlutterBinding.ensureInitialized();
   await beforeAppInitial();
+
+    // 全局锁定竖屏
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((_) {
   runApp(MultiProvider(providers: providers, child: const MyApp()));
+  });
+  
 }
 
 class MyApp extends StatefulWidget {
@@ -23,12 +32,11 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
-
+  Brightness?  brightness ; 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-   
   }
 
     @override
@@ -37,11 +45,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
+  @override
+  void didChangePlatformBrightness() {
+    super.didChangePlatformBrightness();
+    setState(() {
+      brightness =  View.of(context).platformDispatcher.platformBrightness;
+    });
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
 
-    final brightness = View.of(context).platformDispatcher.platformBrightness;
+    final b = brightness??  View.of(context).platformDispatcher.platformBrightness;
+
     // 采用googlefont，所用的字体下载到本地
     TextTheme textTheme = createTextTheme(
       context,
@@ -53,7 +69,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MaterialApp.router(
       title: '惊鸿节拍器',
-      theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+      theme: b == Brightness.light ? theme.light() : theme.dark(),
       routerConfig: router(context.watch<AgreementRepo>()),
     );
   }

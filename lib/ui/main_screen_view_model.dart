@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/configs/data_type.dart';
@@ -9,16 +10,16 @@ import 'package:flutter_metronome/repo/player_config_repo.dart';
 import 'package:flutter_metronome/service/services/audio/sound.dart';
 import 'package:flutter_metronome/utils/command.dart';
 import 'package:flutter_metronome/utils/result.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:intl/intl.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class MainScreenViewModel extends ChangeNotifier {
   MainScreenViewModel({required PlayerConfigRepo configRepo})
     : _configRepo = configRepo {
-    _player = AudioPlayer();
-    _player.setLoopMode(LoopMode.all);
     getConfigHis = Command0(_getConfigHis);
     deleteConfig = Command1<void, PlayerConfigInfo>(_deleteConfig);
+
     changePlayer();
   }
 
@@ -39,7 +40,7 @@ class MainScreenViewModel extends ChangeNotifier {
 
   ValueNotifier<PlayerConfigInfo?> currentConfig = ValueNotifier(null);
 
-  List<PlayerConfigInfo> configHis = [];
+  ValueNotifier<List<PlayerConfigInfo>> configHis = ValueNotifier([]);
 
   late final Command0 getConfigHis;
   late final Command1 deleteConfig;
@@ -152,23 +153,28 @@ class MainScreenViewModel extends ChangeNotifier {
   }
 
   // 6. 当前是否播放标志
+
   bool _isPlaying = false;
   bool get isPlaying => _isPlaying;
 
   // 7. 是否有变动标志
   bool _isChange = false;
   bool get isChange => _isChange;
-  // 8.产出player
-  late AudioPlayer _player;
+
+  double lottieControllerValue = 0;
+  double beatControllerValue = 0;
 
   // 8. 音源是否配置成功
   bool isInitialized = false;
+
+  late AudioSource sound;
+  late SoundHandle handle;
 
   // 根据音乐参数生成音源
   // 1. 根据拍数确定播放器的数量
   // 2. 需要传入每拍的拍子类型
   // 3. 需要每一拍时值， 每一拍是均匀的
-  List<AudioSource> generateSound(
+  Uint8List generateSound(
     int m,
     int duration,
     List<BeatType> type,
@@ -176,7 +182,7 @@ class MainScreenViewModel extends ChangeNotifier {
   ) {
     assert(m == type.length);
 
-    final sources = <AudioSource>[];
+    final sources = <Sound>[];
     for (int i = 0; i < m; i++) {
       final isSubdivided = type[i] != BeatType.A;
       late SoundType soundtype;
@@ -197,7 +203,7 @@ class MainScreenViewModel extends ChangeNotifier {
       );
       sources.add(soundSource);
     }
-    return sources;
+    return generateSoundMemo(sources);
   }
 
   // 函数功能
@@ -226,19 +232,20 @@ class MainScreenViewModel extends ChangeNotifier {
     _timer = null;
   }
 
-  void startPlayer() {
+  void startPlayer() async {
     _isPlaying = true;
-    _player.play();
+    SoLoud.instance.setPause(handle, false);
   }
 
   void pausePlayer() {
     _isPlaying = false;
-    _player.pause();
+    SoLoud.instance.setPause(handle, true);
   }
 
   // 播放
   void play() {
     startPlayer();
+    WakelockPlus.toggle(enable: true);
     if (runningState.value == 1) startTimer(); // 暂停
     notifyListeners();
   }
@@ -246,8 +253,16 @@ class MainScreenViewModel extends ChangeNotifier {
   // 手动暂停
   void pause() {
     pausePlayer();
+    WakelockPlus.toggle(enable: false);
     if (runningState.value == 2) pauseTimer();
     notifyListeners();
+  }
+
+  // 页面dispose造成的暂停
+  void pauseBySystem() {
+    pausePlayer();
+    WakelockPlus.toggle(enable: false);
+    if (runningState.value == 2) pauseTimer();
   }
 
   // 获取同步时间
@@ -256,30 +271,35 @@ class MainScreenViewModel extends ChangeNotifier {
 
   // 选择暂停
   void pauseOnSelect() {
-    _player.pause();
+    SoLoud.instance.setPause(handle, true);
   }
 
   // 重置播放器
   Future<void> changePlayer() async {
-    if (_isPlaying) {
-      _player.stop();
-      _isPlaying = false;
-    }
+    //SoLoud.instance.listPlaybackDevices();
+    await SoLoud.instance.disposeAllSources();
+    _isPlaying = false;
     _isChange = false;
     isInitialized = false;
     notifyListeners();
-    final source = generateSound(_beatNum, duration, _beatTypes, false);
-    await _player.setAudioSources(source);
+    final sources = generateSound(_beatNum, duration, _beatTypes, false);
+    sound = await SoLoud.instance.loadMem(
+      "temp.wav",
+      sources,
+      mode: LoadMode.memory,
+    );
+    handle = await SoLoud.instance.play(sound, paused: true, looping: true);
     isInitialized = true;
     notifyListeners();
   }
 
+  /*
   @override
   void dispose() {
     _player.dispose();
     super.dispose();
   }
-
+*/
   void resetPlayer(
     int bpm,
     int beatNum,
@@ -292,6 +312,7 @@ class MainScreenViewModel extends ChangeNotifier {
     this.beatNote = beatNote;
     this.beatNum = beatNum;
     this.referenceBeat = referenceBeat;
+    _isChange = true;
   }
 
   // 播放设置相关
@@ -343,12 +364,12 @@ class MainScreenViewModel extends ChangeNotifier {
 
   // 2. 获取历史配置信息
   Future<Result<void>> _getConfigHis() async {
-    final offset = configHis.length;
+    final offset = configHis.value.length;
     final limit = 5;
     final rst = await _configRepo.getPlayerConfigs(offset, limit);
     rst.when(
       success: (v) {
-        configHis.addAll(v);
+        configHis.value = [...configHis.value, ...v];
         return Success(null);
       },
       failure: (_, __) {
@@ -367,7 +388,9 @@ class MainScreenViewModel extends ChangeNotifier {
     final rst = await _configRepo.deletePlayerConfig(p.playerConfigNo);
     rst.when(
       success: (v) {
-        configHis.removeWhere((c) => c.playerConfigNo == p.playerConfigNo);
+        final copy = [...configHis.value];
+        copy.removeWhere((c) => c.playerConfigNo == p.playerConfigNo);
+        configHis.value = copy;
       },
       failure: (_, __) {},
     );

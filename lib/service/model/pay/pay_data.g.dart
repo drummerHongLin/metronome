@@ -61,13 +61,13 @@ _PaymentRecord _$PaymentRecordFromJson(Map<String, dynamic> json) =>
       paymentNo: json['paymentNo'] as String,
       accountToken: json['accountToken'] as String,
       createTime: json['createTime'] as String,
-      payTime: json['payTime'] as String,
+      payTime: json['payTime'] as String?,
       productName: json['productName'] as String,
-      payStatus: (json['payStatus'] as num).toInt(),
+      payStatus: (json['payStatus'] as num?)?.toInt(),
       quantity: (json['quantity'] as num).toInt(),
       amount: (json['amount'] as num).toDouble(),
       price: (json['price'] as num).toDouble(),
-      transactionId: json['transactionId'] as String,
+      transactionId: json['transactionId'] as String?,
     );
 
 Map<String, dynamic> _$PaymentRecordToJson(_PaymentRecord instance) =>
@@ -103,7 +103,7 @@ Map<String, dynamic> _$GetPaymentListRequestToJson(
 _GetPaymentListResponse _$GetPaymentListResponseFromJson(
   Map<String, dynamic> json,
 ) => _GetPaymentListResponse(
-  accountToken: json['accountToken'] as String,
+  hasMore: json['hasMore'] as bool,
   paymentRecords: (json['paymentRecords'] as List<dynamic>)
       .map((e) => PaymentRecord.fromJson(e as Map<String, dynamic>))
       .toList(),
@@ -112,6 +112,6 @@ _GetPaymentListResponse _$GetPaymentListResponseFromJson(
 Map<String, dynamic> _$GetPaymentListResponseToJson(
   _GetPaymentListResponse instance,
 ) => <String, dynamic>{
-  'accountToken': instance.accountToken,
+  'hasMore': instance.hasMore,
   'paymentRecords': instance.paymentRecords,
 };

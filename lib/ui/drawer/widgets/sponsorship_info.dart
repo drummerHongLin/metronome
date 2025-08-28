@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_metronome/configs/data_type.dart';
+import 'package:flutter_metronome/route/routes.dart';
 import 'package:flutter_metronome/ui/drawer/view_models/sponsorship_view_model.dart';
 import 'package:flutter_metronome/ui/utils/center_info.dart';
-import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class SponsorshipInfo extends StatefulWidget {
-  const SponsorshipInfo({super.key});
+
+  final SponsorshipViewModel viewModel;
+  const SponsorshipInfo({super.key, required this.viewModel});
 
   @override
   State<SponsorshipInfo> createState() => _SponsorshipInfoState();
@@ -16,13 +19,12 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
   int cupOfCoffee = 0;
   double sponsorMoney = 0.0;
   final TextEditingController _controller = TextEditingController();
-  late final SponsorshipViewModel viewModel;
 
   @override
   void initState() {
     super.initState();
     _controller.text = sponsorMoney.toString();
-    viewModel = context.read<SponsorshipViewModel>();
+
   }
 
   @override
@@ -52,9 +54,9 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
 
   Widget _buildChild() {
     return ListenableBuilder(
-      listenable: viewModel.invokePurchase,
+      listenable: widget.viewModel.invokePurchase,
       builder: (ctx, child) {
-        if (viewModel.invokePurchase.running) {
+        if (widget.viewModel.invokePurchase.running) {
           return Stack(
             alignment: AlignmentDirectional.center,
             children: [child!, const CircularProgressIndicator()],
@@ -68,7 +70,7 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: ValueListenableBuilder(
-              valueListenable: viewModel.msg,
+              valueListenable: widget.viewModel.msg,
               builder: (ctx, v, child) {
                 if (v.isEmpty) return child!;
                 return Text(v, style: TextStyle(color: Colors.red));
@@ -136,7 +138,7 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  viewModel.invokePurchase.execute(
+                  widget.viewModel.invokePurchase.execute(
                     Product.one_cup_coffee,
                     cupOfCoffee,
                   );
@@ -145,6 +147,9 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
               ),
             ],
           ),
+          TextButton(onPressed: (){
+            context.push(Routes.sponsorshipList);
+          }, child: Text("查看赞助记录"))
         ],
       ),
     );

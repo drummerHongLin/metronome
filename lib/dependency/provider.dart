@@ -66,7 +66,6 @@ List<SingleChildWidget> get providers {
     ProxyProvider<PayRepo, SponsorshipViewModel>(
       update: (ctx, pr, sv) => SponsorshipViewModel(payRepo: pr),
     ),
-
     ChangeNotifierProxyProvider<PlayerConfigRepo, MainScreenViewModel>(
       create: (ctx) => MainScreenViewModel(configRepo: ctx.read()),
       update: (ctx, pcr, msv) {

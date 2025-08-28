@@ -5,6 +5,7 @@ import 'package:flutter_metronome/service/services/native_channel/native_channel
 import 'package:flutter_metronome/service/services/shared_preference/shared_preference.dart';
 import 'package:flutter_metronome/service/services/sql_lite/sql_lite.dart';
 import 'package:flutter_metronome/utils/tools.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 
 Future<void> beforeAppInitial() async {
   // 先获取登录状态
@@ -27,7 +28,7 @@ Future<void> beforeAppInitial() async {
       ),
     );
     try {
-      await client.get("");
+      await client.post("",data: {});
     } on DioException catch (e) {
       if ([
         DioExceptionType.connectionTimeout,
@@ -57,4 +58,17 @@ Future<void> beforeAppInitial() async {
       (args) => handleUpdateTransaction(args, PayDbClient.instance),
     );
   }
+
+  // 初始化声音播放器
+
+  await SoLoud.instance.init(
+    sampleRate: 44100,      // Audio quality
+    bufferSize: 2048,       // Buffer size affects latency
+    channels: Channels.stereo, // 单声道
+  );
+
+  // 不知道为啥，要调用这个才能用扬声器播放
+  
+  
+ 
 }

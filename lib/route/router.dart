@@ -19,6 +19,11 @@ import 'package:flutter_metronome/ui/auth/profile/profile_screen.dart';
 import 'package:flutter_metronome/ui/auth/profile/widgets/add_avatar.dart';
 import 'package:flutter_metronome/ui/auth/profile/widgets/change_password.dart';
 import 'package:flutter_metronome/ui/auth/register/register_screen.dart';
+import 'package:flutter_metronome/ui/drawer/view_models/sponsorship_view_model.dart';
+import 'package:flutter_metronome/ui/drawer/widgets/jinghong_info.dart';
+import 'package:flutter_metronome/ui/drawer/widgets/sponsorship_info.dart';
+import 'package:flutter_metronome/ui/drawer/widgets/sponsorship_list.dart';
+import 'package:flutter_metronome/ui/drawer/widgets/version_info.dart';
 
 import 'package:flutter_metronome/ui/main_screen.dart';
 import 'package:flutter_metronome/ui/main_screen_view_model.dart';
@@ -117,6 +122,41 @@ GoRouter router(AgreementRepo sps) => GoRouter(
               ),
             ),
           ],
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/drawer',
+      builder: (context, state) => Center(child: Text("404 页面不存在!")),
+
+      routes: [
+        GoRoute(
+          path: '/sponsorship',
+          pageBuilder: (context, state) => popPage(
+            state.pageKey,
+            SponsorshipInfo(viewModel: context.read<SponsorshipViewModel>()),
+          ),
+          routes: [
+            GoRoute(
+              path: '/list',
+              pageBuilder: (context, state) => popPage(
+                state.pageKey,
+                SponsorshipList(
+                  viewModel: context.read<SponsorshipViewModel>(),
+                ),
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: '/version',
+          pageBuilder: (context, state) =>
+              popPage(state.pageKey, VersionInfo()),
+        ),
+        GoRoute(
+          path: '/about',
+          pageBuilder: (context, state) =>
+              popPage(state.pageKey, JinghongInfo()),
         ),
       ],
     ),

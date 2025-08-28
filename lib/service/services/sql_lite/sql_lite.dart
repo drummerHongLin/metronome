@@ -40,7 +40,7 @@ mixin _SqliteDb {
 
     await db.execute('''
       CREATE TABLE player_config(
-        playerConfigNo TEXT PRIMARY KEY,
+        playConfigNo TEXT PRIMARY KEY,
         createTime TEXT NOT NULL,
         updateTime TEXT NOT NULL,
         bpm INTEGER NOT NULL,
@@ -77,7 +77,7 @@ class PayDbClient extends PayService with _SqliteDb {
     );
     final paymentList = rst.map((e) => PaymentRecord.fromJson(e)).toList();
     return GetPaymentListResponse(
-      accountToken: request.accountToken,
+      hasMore: paymentList.isEmpty,
       paymentRecords: paymentList,
     );
   }
@@ -98,18 +98,8 @@ class PayDbClient extends PayService with _SqliteDb {
 
   @override
   Future<void> updatePayment(UpdatePaymentRecordRequest request) async {
-    final db = await database;
-    // 需要本地生成paymentNo
-    final paymentNo = "FK${DateTime.now().millisecondsSinceEpoch}";
     // 将请求转化成json
-    final paymentInfoJson = request.toJson();
-    paymentInfoJson['paymentNo'] = paymentNo;
-    await db.update(
-      'payment_record',
-      paymentInfoJson,
-      where: 'paymentNo = ?',
-      whereArgs: [paymentNo],
-    );
+    request.toJson();
     return;
   }
 
@@ -122,7 +112,7 @@ class PayDbClient extends PayService with _SqliteDb {
 
   Future<void> truncatePaymentRecord() async {
     final db = await database;
-    return db.execute('truncate table payment_record');
+    return db.execute('delete from payment_record');
   }
 }
 
@@ -174,7 +164,7 @@ class PlayerConfigDbClient extends PlayerConfigService with _SqliteDb {
     await db.update(
       'player_config',
       p.toJson(),
-      where: "playerConfigNo = ?",
+      where: "playConfigNo = ?",
       whereArgs: [p.playConfigNo],
     );
     return;
@@ -189,6 +179,6 @@ class PlayerConfigDbClient extends PlayerConfigService with _SqliteDb {
 
   Future<void> truncatePlayerConfigs() async {
     final db = await database;
-    return db.execute('truncate table player_config');
+    return db.execute(' delete from player_config');
   }
 }

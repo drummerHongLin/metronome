@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_metronome/route/routes.dart';
 import 'package:flutter_metronome/ui/drawer/view_models/user_view_model.dart';
-import 'package:flutter_metronome/ui/drawer/widgets/jinghong_info.dart';
-import 'package:flutter_metronome/ui/drawer/widgets/sponsorship_info.dart';
 import 'package:flutter_metronome/ui/drawer/widgets/user_panel.dart';
-import 'package:flutter_metronome/ui/drawer/widgets/version_info.dart';
 import 'package:flutter_metronome/ui/utils/circle_img.dart';
-import 'package:flutter_metronome/ui/utils/popuprouter_wrapper.dart';
 import 'package:go_router/go_router.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -19,16 +15,9 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  final List<(int, String)> _tiles = [(1, '版本说明'), (2, '关于惊鸿'), (3, '赞助')];
+  final List<(String, String)> _tiles = [(Routes.version, '版本说明'), (Routes.about, '关于惊鸿'), (Routes.sponsorship, '赞助')];
 
   int _selectedIndex = 0;
-
-  Route _buildInfoRoute(int i) {
-    if (i == 1) return PopUpRouteWrapper(child: VersionInfo());
-    if (i == 2) return PopUpRouteWrapper(child: JinghongInfo());
-    if (i == 3) return PopUpRouteWrapper(child: SponsorshipInfo());
-    return PopUpRouteWrapper(child: VersionInfo());
-  }
 
   void _setSelectedIndex(int v) {
     setState(() {
@@ -57,14 +46,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   title: Text(_tiles[index].$2),
-                  selected: _selectedIndex == _tiles[index].$1,
+                  selected: _selectedIndex == index,
                   onTap: () async {
-                    _setSelectedIndex(_tiles[index].$1);
+                    _setSelectedIndex(index);
                     // Update the state of the app
-                    await Navigator.push(
-                      context,
-                      _buildInfoRoute(_tiles[index].$1),
-                    );
+                    await context.push(_tiles[index].$1);
                     // Then close the drawer
                   },
                 );

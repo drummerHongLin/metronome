@@ -13,6 +13,7 @@ import 'package:flutter_metronome/ui/buttons/buttone_sector.dart';
 import 'package:flutter_metronome/ui/drawer/custom_drawer.dart';
 import 'package:flutter_metronome/ui/metronome/metronome_sector.dart';
 import 'package:flutter_metronome/ui/modifier/modifier_sector.dart';
+import 'package:flutter_metronome/ui/notice/notice_scroll.dart';
 import 'package:flutter_metronome/ui/overlay/custom_overlay.dart';
 import 'package:flutter_metronome/ui/selector/selector_sector.dart';
 import 'package:flutter_metronome/ui/timer/timer_component.dart';
@@ -34,13 +35,18 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   int currentBeat = 0;
 
+  final msgList = [
+    "外放扬声器需要关闭静音模式",
+    "节拍播放被中断后，请暂停后重新开始"
+  ];
+
   final GlobalKey containerKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    beatController = AnimationController(vsync: this);
-    lottieController = AnimationController(vsync: this);
+    beatController = AnimationController(vsync: this,value: widget.viewModel.beatControllerValue);
+    lottieController = AnimationController(vsync: this,value: widget.viewModel.lottieControllerValue);
 
     beatController.duration = Duration(
       milliseconds: widget.viewModel.duration * widget.viewModel.beatNum,
@@ -54,6 +60,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    widget.viewModel.pauseBySystem();
+    widget.viewModel.beatControllerValue = beatController.value;
+    widget.viewModel.lottieControllerValue = lottieController.value;
     beatController.dispose();
     lottieController.dispose();
     widget.viewModel.runningState.removeListener(timingOut);
@@ -236,6 +245,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             );
           },
         ),
+        title: NoticeScroll(),
         actions: [
           TimerComponent(
             runningState: widget.viewModel.runningState,

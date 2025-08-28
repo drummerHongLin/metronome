@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'dart:typed_data';
-import 'package:just_audio/just_audio.dart';
 
-class Sound extends StreamAudioSource {
+
+class Sound  {
   // 1. 这段声音的总时值, 毫秒为单位
   final int soundDuration;
   //final int beatDuration = 100; // beat音的最大时值为100ms
@@ -11,16 +11,15 @@ class Sound extends StreamAudioSource {
   final double n; // 幅值
 
   // 都是取默认值
-  final int sampleRate = 44100; // 采样率
-  final int bitsPerSample = 16; // 采样深度
-  final int numChannels = 1; // 单声道
+  static const  sampleRate = 44100; // 采样率
+  static const  bitsPerSample = 16; // 采样深度
+  static const  numChannels = 1; // 单声道
 
   // 3. 细分音符数组
   final List<int> subNotes;
   late Uint8List sound;
 
   Sound({
-    super.tag,
     required this.soundDuration,
     required this.k,
     required this.n,
@@ -28,21 +27,22 @@ class Sound extends StreamAudioSource {
   }) {
     // 暂时先考虑最多到16分节奏和3连音
     assert(subNotes.length == 12);
-    final pcmData = _createSound();
-    sound = _createWavFile(pcmData);
   }
 
+}
+
+
   // 创建pcm的主体
-  Uint8List _createSound() {
+Uint8List _createSound(Sound ss) {
     // 声音的总持续时间
-    final time = soundDuration / 1000;
-    final duration = (sampleRate * time).toInt();
+    final time = ss.soundDuration / 1000;
+    final duration = (Sound.sampleRate * time).toInt();
 
     // 频率以及采样系数
-    final s = 2 * pi * k / sampleRate;
-    final r = 100 / sampleRate;
-    final p = 200 / sampleRate;
-    final o = 500 / sampleRate;
+    final s = 2 * pi * ss.k / Sound.sampleRate;
+    final r = 100 / Sound.sampleRate;
+    final p = 200 / Sound.sampleRate;
+    final o = 500 / Sound.sampleRate;
 
     // 创建缓存数组
     final pcmBuffer = Int16List(duration);
@@ -51,11 +51,11 @@ class Sound extends StreamAudioSource {
     // 细分小节
     int lastBeat = -1;
     for (int i = 0; i < 12; i++) {
-      if (subNotes[i] == 1) {
+      if (ss.subNotes[i] == 1) {
         if (lastBeat >= 0) {
           final start = (lastBeat *duration / 12 ).toInt();
           final subDuration = ((i - lastBeat) * duration /12).toInt();
-          final subSound = _createSubSound(subDuration, s, r, p, o);
+          final subSound = _createSubSound(subDuration, s, r, p, o,ss.n);
           pcmBuffer.setRange(start, start + subDuration, subSound);
         }
         lastBeat = i;
@@ -66,14 +66,14 @@ class Sound extends StreamAudioSource {
     // 最后一定会留一个
       final start = (lastBeat *duration / 12 ).toInt();
     final subDuration = ((12 - lastBeat) * duration /12).toInt();
-    final subSound = _createSubSound(subDuration, s, r, p, o);
+    final subSound = _createSubSound(subDuration, s, r, p, o,ss.n);
 
     pcmBuffer.setRange(start, start + subDuration, subSound);
 
     return pcmBuffer.buffer.asUint8List();
   }
 
-  Int16List _createSubSound(int t, double s, r, p, o) {
+Int16List _createSubSound(int t, double s, r, p, o,n) {
     final pcmBuffer = Int16List(t);
     for (int q = 0; q < t; q++) {
       final value =
@@ -87,7 +87,7 @@ class Sound extends StreamAudioSource {
   }
 
   // 增加文件的头信息
-  Uint8List _createWavFile(Uint8List pcmData) {
+Uint8List _createWavFile(Uint8List pcmData,int numChannels,int sampleRate,int bitsPerSample) {
     // 计算数据块大小
     final int dataSize = pcmData.length;
 
@@ -158,17 +158,13 @@ class Sound extends StreamAudioSource {
     return rst;
   }
 
-  @override
-  Future<StreamAudioResponse> request([int? start, int? end]) async {
-        start ??= 0;
-    end ??= sound.length;
 
-    return StreamAudioResponse(
-      sourceLength: sound.length,
-      contentLength: end - start,
-      offset: start,
-      stream: Stream.value(sound.sublist(start, end)),
-      contentType: 'audio/wav',
-    );
-  }
+
+
+Uint8List generateSoundMemo(List<Sound> ss){
+    final  soundBody = BytesBuilder();
+    for(var s in ss){
+      soundBody.add(_createSound(s));
+    }
+    return _createWavFile( soundBody.toBytes(),Sound.numChannels, Sound.sampleRate, Sound.bitsPerSample);
 }

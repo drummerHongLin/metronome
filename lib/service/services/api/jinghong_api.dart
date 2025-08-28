@@ -162,7 +162,7 @@ class PayApiClient extends PayService with _DioClient {
     GetPaymentListRequest request,
   ) async {
     final client = getClient();
-    final rst = await client.post(
+    final rst = await client.get(
       '/v1/payment/get-payments/${request.start}/${request.end}',
     );
     return GetPaymentListResponse.fromJson(rst.data);

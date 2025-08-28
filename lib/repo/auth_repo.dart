@@ -9,6 +9,7 @@ import 'package:flutter_metronome/service/model/user/user_data.dart';
 import 'package:flutter_metronome/service/model/token/token_data.dart';
 import 'package:flutter_metronome/service/services/shared_preference/shared_preference.dart';
 import 'package:flutter_metronome/utils/result.dart';
+import 'package:flutter_metronome/utils/tools.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AuthRepo extends ChangeNotifier {
@@ -88,7 +89,7 @@ class AuthRepo extends ChangeNotifier {
       );
       token = TokenInfo(value: rst1.token, expiredAt: rst1.expiredAt);
       // 登录成功后启动数据转移 完善api接口后操作
-      // await dataTransmit();
+      await dataTransmit();
       return Success(null);
     } on DioException catch (e) {
       if (e.response?.data != null) {

@@ -33,63 +33,67 @@ class ConfigHisPanel extends StatelessWidget {
                       viewModel.getConfigHis,
                       viewModel.deleteConfig,
                     ]),
-                    builder: (ctx, c) {
+                    builder: (ctx, _) {
                       if (viewModel.getConfigHis.running ||
                           viewModel.deleteConfig.running) {
                         return Center(child: CircularProgressIndicator());
-                      } else if (viewModel.configHis.isEmpty) {
-                        return c!;
+                      } 
+                      return ValueListenableBuilder(
+                        valueListenable: viewModel.configHis,
+                        builder: (context, value, child) {
+                           if (value.isEmpty) {
+                        return child!;
                       }
                       return Column(
-                        children: [
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: viewModel.configHis.length,
-                              padding: EdgeInsets.zero,
-                              itemBuilder: (ctx, idx) {
-                                return _ConfigTile(
-                                  configInfo: viewModel.configHis[idx],
-                                  onCheck: () {
-                                    Navigator.pop(
-                                      context,
-                                      viewModel.configHis[idx],
-                                    );
-                                  },
-                                  onDelete: () {
-                                    viewModel.deleteConfig.execute(
-                                      viewModel.configHis[idx],
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                await _gotoCreateConfig(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(
-                                  context,
-                                ).colorScheme.primary,
-                                overlayColor: Theme.of(
-                                  context,
-                                ).colorScheme.onPrimary,
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: value.length,
+                                padding: EdgeInsets.zero,
+                                itemBuilder: (ctx, idx) {
+                                  return _ConfigTile(
+                                    configInfo: value[idx],
+                                    onCheck: () {
+                                      Navigator.pop(
+                                        context,
+                                        value[idx],
+                                      );
+                                    },
+                                    onDelete: () {
+                                      viewModel.deleteConfig.execute(
+                                        value[idx],
+                                      );
+                                    },
+                                  );
+                                },
                               ),
-                              child: Text(
-                                "新建节拍配置",
-                                style: TextStyle(
-                                  color: Theme.of(
+                            ),
+                            Center(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  await _gotoCreateConfig(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).colorScheme.primary,
+                                  overlayColor: Theme.of(
                                     context,
                                   ).colorScheme.onPrimary,
                                 ),
+                                child: Text(
+                                  "新建节拍配置",
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    },
+                          ],
+                        );
+                        },
                     child: Center(
                       child: TextButton(
                         onPressed: () async {
@@ -98,6 +102,9 @@ class ConfigHisPanel extends StatelessWidget {
                         child: Text("新建节拍配置"),
                       ),
                     ),
+                        
+                      );
+                    }
                   ),
                 ),
               ],
@@ -114,6 +121,7 @@ class ConfigHisPanel extends StatelessWidget {
       context,
       PopUpRouteWrapper<String>(child: CreateConfigPanel(configInfo: config)),
     );
+    
     if (rst != null) {
       await viewModel.saveConfig(title: rst, pc: config);
       // ignore: use_build_context_synchronously

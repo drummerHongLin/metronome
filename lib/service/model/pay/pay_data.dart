@@ -47,13 +47,13 @@ abstract class PaymentRecord with _$PaymentRecord {
     required String paymentNo,
     required String accountToken,
     required String createTime,
-    required String payTime,
+    String? payTime,
     required String productName,
-    required int payStatus,
+    int? payStatus,
     required int quantity,
     required double amount,
     required double price,
-    required String transactionId,
+    String? transactionId,
   }) = _PaymentRecord;
 
   factory PaymentRecord.fromJson(Map<String, dynamic> json) =>
@@ -75,7 +75,7 @@ abstract class GetPaymentListRequest with _$GetPaymentListRequest {
 @freezed
 abstract class GetPaymentListResponse with _$GetPaymentListResponse {
   const factory GetPaymentListResponse({
-    required String accountToken,
+    required bool hasMore,
     required List<PaymentRecord> paymentRecords,
   }) = _GetPaymentListResponse;
 
