@@ -23,7 +23,7 @@ class _NoticeScrollState extends State<NoticeScroll> with SingleTickerProviderSt
   void initState() {
     super.initState();
     controller = AnimationController(vsync: this,duration: Duration(seconds: 1),value: 1);
-    timer = Timer.periodic(Duration(seconds: 10), (Tab){
+    timer = Timer.periodic(Duration(seconds: 10), (_){
       setState(() {
         showIndex++;
         controller.reset();

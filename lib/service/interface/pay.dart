@@ -5,5 +5,5 @@ abstract class PayService {
   Future<CreatePaymentRecordResponse> createPayment(CreatePaymentRecordRequest request );
   Future<void> updatePayment(UpdatePaymentRecordRequest request) ;
   Future<GetPaymentListResponse> getPaymentList(GetPaymentListRequest request) ;
-
+  Future<PaymentRecord> getPaymentByTransactionId(String transactionId);
 }

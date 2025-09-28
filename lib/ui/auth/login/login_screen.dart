@@ -168,6 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                       return null;
                     },
+                    onEditingComplete: _login,
                   ),
                   SizedBox(height: 10),
                   if (_errorMessage.isNotEmpty)

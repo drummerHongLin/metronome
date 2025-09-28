@@ -29,7 +29,7 @@ class PayRepo {
       payRes = await _payService.createPayment(
         CreatePaymentRecordRequest(
           accountToken: token,
-          createTime: DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now()),
+          createTime: DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now().toUtc().add(Duration(hours: 8))),
           productName: product.name,
           quantity: quantity,
           price: product.price.toDouble(),
@@ -65,7 +65,7 @@ class PayRepo {
           payStatus: 4,
         ),
       );
-      return Failure("三方支付调用失败!", e);
+      return Failure("支付失败: ${e.message}", e);
     } on Exception catch (e) {
       return Failure("平台支付记录失败!", e);
     }

@@ -172,6 +172,18 @@ class PayApiClient extends PayService with _DioClient {
     final client = getClient();
     await client.post("/v1/payment/insert-payments", data: jsonEncode(prs));
   }
+  
+  @override
+  Future<PaymentRecord> getPaymentByTransactionId(String transactionId) async {
+    final client = getClient();
+
+    final rst = await client.get("/v1/payment/ts/$transactionId");
+
+  
+
+    return PaymentRecord.fromJson(rst.data);
+
+  }
 }
 
 class PlayerConfigApiClient extends PlayerConfigService with _DioClient {

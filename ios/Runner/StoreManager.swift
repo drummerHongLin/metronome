@@ -32,14 +32,17 @@ class StoreManager {
 
     // 全局单例对象
     static let shared = StoreManager()
-    private let productIdentifiers: Set<String> = [
-        "jinghong_metronome_coffee_1"
+    private let productIdentifiers: Array<String> = [
+        "jinghong_metronome_coffee_1",
+        "jinghong_metronome_coffee_5",
+        "jinghong_metronome_coffee_10",
+
     ]
     // 交易更新任务
     private var transactionUpdatesTask: Task<Void, Never>?
     
     
-    var products: [Product] = [Product]()
+    var products: [Product] = [Product]()		
     
     // 1. 加载已建档商品
     func loadProducts() async throws {
@@ -54,6 +57,7 @@ class StoreManager {
         products = appProducts
 
     }
+  
     // 2. 调起系统支付
     func invokePurchase(purchaseInfo:PurchaseInfo, completion: @escaping (String?, Error?) -> Void)
     {
@@ -65,23 +69,30 @@ class StoreManager {
                 }
             }
 
+            let productIndex : Int = purchaseInfo.quantity/5 ;
+
             do {
                 guard let token = UUID(uuidString:purchaseInfo.accountId)
                 else {
                     completion(nil, IapError.AccountIdError)
                     return
                 }
-                let purchaseResult: Product.PurchaseResult = try await products[0].purchase(
+                guard let productToBuy =  products.first(where: { $0.id == productIdentifiers[productIndex] })
+                else {
+                    completion(nil, IapError.ProductNotLoaded)
+                    return
+                }
+                let purchaseResult: Product.PurchaseResult = try await productToBuy.purchase(
                     options: [
                         .appAccountToken(token),
-                        .quantity(purchaseInfo.quantity),
+                        .quantity(1),
                     ])
                 switch purchaseResult {
                 case .success(let verificationResult):
                     switch verificationResult {
                     case .verified(let transaction):
                         completion(transaction.jsonRepresentation.base64EncodedString(), nil)
-                         await transaction.finish()
+                        await transaction.finish()
                     case .unverified(_, let VerificationError):
                         completion(nil, VerificationError)
                     }
@@ -94,6 +105,7 @@ class StoreManager {
                 @unknown default:
                     break
                 }
+                
 
             } catch {
                 completion("", error)
@@ -123,12 +135,19 @@ class StoreManager {
             completion(nil)
             return
         }
-        
-        // 通知购买成功
-        completion(tx.jsonRepresentation.base64EncodedString())
-        
-        // 结束交易（必须调用）
-        await tx.finish()
+        if let _ = tx.revocationDate {
+            completion(nil)
+            return
+        } else if let expirationDate = tx.expirationDate,
+            expirationDate < Date() {
+            return
+        } else if tx.isUpgraded {
+            return
+        } else {
+           completion(tx.jsonRepresentation.base64EncodedString())
+            await tx.finish()
+        }    
+      
     }
 
 }

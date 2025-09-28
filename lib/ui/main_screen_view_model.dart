@@ -321,8 +321,8 @@ class MainScreenViewModel extends ChangeNotifier {
     final playerConfigNo = "PC${DateTime.now().millisecondsSinceEpoch}";
     return PlayerConfigInfo(
       playerConfigNo: playerConfigNo,
-      createTime: DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now()),
-      updateTime: DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now()),
+      createTime: DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now().toUtc().add(Duration(hours: 8))),
+      updateTime: DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now().toUtc().add(Duration(hours: 8))),
       bpm: _bpm,
       beatNum: _beatNum,
       beatNote: _beatNote,
@@ -330,7 +330,7 @@ class MainScreenViewModel extends ChangeNotifier {
       subBeats: _beatTypes,
       configTitle:
           title ??
-          "新建节拍记录 - ${DateFormat('yyyy-MM-dd').format(DateTime.now())}",
+          "节拍记录 - ${DateFormat('yyyy-MM-dd').format(DateTime.now().toUtc().add(Duration(hours: 8)))}",
     );
   }
 
@@ -347,8 +347,16 @@ class MainScreenViewModel extends ChangeNotifier {
       pc.beatNum = _beatNum;
       pc.referenceBeat = _referenceBeat;
       pc.subBeats = _beatTypes;
-      pc.updateTime = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
+      pc.updateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now().toUtc().add(Duration(hours: 8)));
       rst = await _configRepo.updatePlayerConfig(pc);
+      configHis.value = configHis.value.map((p){
+        if(p.playerConfigNo == pc!.playerConfigNo){
+          return pc;
+        }
+        else {
+          return p;
+        }
+      }).toList();
     }
     rst.when(
       success: (v) {

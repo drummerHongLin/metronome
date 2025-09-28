@@ -1,7 +1,7 @@
 name: flutter_metronome
 description: "惊鸿节拍器"
 publish_to: 'none'
-version: 1.0.0+6
+version: 1.0.0+15
 
 environment:
   sdk: ^3.8.0

@@ -98,8 +98,10 @@ class PayDbClient extends PayService with _SqliteDb {
 
   @override
   Future<void> updatePayment(UpdatePaymentRecordRequest request) async {
+     final db = await database;
     // 将请求转化成json
-    request.toJson();
+    var value = request.toJson();
+    await db.update('payment_record',value);
     return;
   }
 
@@ -113,6 +115,16 @@ class PayDbClient extends PayService with _SqliteDb {
   Future<void> truncatePaymentRecord() async {
     final db = await database;
     return db.execute('delete from payment_record');
+  }
+  
+  @override
+  Future<PaymentRecord> getPaymentByTransactionId(String transactionId) async{
+    final db = await database;
+    final rst = await db.query("payment_record",where: "transactionId = ?",whereArgs: [transactionId]);
+
+
+    return PaymentRecord.fromJson(rst.first);
+
   }
 }
 
@@ -129,7 +141,7 @@ class PlayerConfigDbClient extends PlayerConfigService with _SqliteDb {
     final db = await database;
     await db.delete(
       'player_config',
-      where: "playerConfigNo = ?",
+      where: "playConfigNo = ?",
       whereArgs: [pNo],
     );
     return;

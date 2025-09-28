@@ -22,7 +22,7 @@ class _CreateConfigPanelState extends State<CreateConfigPanel> {
     focusNode = FocusNode();
     controller = TextEditingController(
       text:
-          "新建节拍配置 - ${DateFormat("yyyy-MM-dd hh:mm:dd").format(DateTime.now())}",
+          "节拍配置 - ${DateFormat("yyyy-MM-dd HH:mm:dd").format(DateTime.now().toUtc().add(Duration(hours: 8)))}",
     );
   }
 

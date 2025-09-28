@@ -67,8 +67,7 @@ Future<void> beforeAppInitial() async {
     channels: Channels.stereo, // 单声道
   );
 
-  // 不知道为啥，要调用这个才能用扬声器播放
-  
-  
+
+
  
 }

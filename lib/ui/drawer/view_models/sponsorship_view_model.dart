@@ -29,6 +29,7 @@ class SponsorshipViewModel {
       success: (v) => msg.value = "支付成功！感谢支持🙏",
       failure: (m, _) => msg.value = m,
     );
+    hasMore.value = true;
     return rst;
   }
 

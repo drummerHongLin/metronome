@@ -89,8 +89,8 @@ class AuthRepo extends ChangeNotifier {
       );
       token = TokenInfo(value: rst1.token, expiredAt: rst1.expiredAt);
       // 登录成功后启动数据转移 完善api接口后操作
-      await dataTransmit();
-      return Success(null);
+       dataTransmit();
+     return Success(null);
     } on DioException catch (e) {
       if (e.response?.data != null) {
         final data = e.response?.data;

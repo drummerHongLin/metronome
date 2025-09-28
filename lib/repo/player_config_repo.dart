@@ -26,6 +26,7 @@ class PlayerConfigRepo {
         configTitle: p.configTitle,
       );
       await _playerConfigService.createPlayerConfig(pd);
+      hasMore = true;
       return Success(null);
     } on Exception catch (e) {
       return Failure("创建节拍失败! ${e.toString()}", e);

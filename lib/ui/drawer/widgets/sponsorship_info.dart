@@ -111,6 +111,7 @@ class _SponsorshipInfoState extends State<SponsorshipInfo> {
               SizedBox(
                 width: 120,
                 child: TextField(
+                  enabled: false,
                   textAlign: TextAlign.center,
                   controller: _controller,
                   keyboardType: TextInputType.number,

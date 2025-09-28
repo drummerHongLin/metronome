@@ -26,7 +26,9 @@ enum BeatType {
   ddDD0,
   DddD1,
   Bddd,
-  dddB0;
+  dddB0,
+  E0EE0E;
+
 
   List<int> value() {
     return switch (this) {
@@ -41,6 +43,7 @@ enum BeatType {
       BeatType.DddD1 => [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0],
       BeatType.Bddd => [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0],
       BeatType.dddB0 => [1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0],
+      BeatType.E0EE0E => [1,0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0]
     };
   }
 
